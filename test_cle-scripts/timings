@@ -1,0 +1,12 @@
+Fe XIII zero collisions 3 level nx=50
+   12.399u 0.038s 0:12.48 99.5%	0+0k 0+0io 0pf+0w
+   24.776u 0.091s 0:25.01 99.4%	0+0k 0+0io 0pf+0w
+
+no difference in output
+
+Fe XIII full collisions 3 level nx=50
+
+   26.288u 0.064s 0:26.44 99.6%	0+0k 0+0io 0pf+0w new 
+   93.814u 0.109s 1:34.06 99.8%	0+0k 0+0io 0pf+0w old 
+
+

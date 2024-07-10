@@ -1,0 +1,63 @@
+bigDirectories:
+
+current    use makefile to make latest cle and db:
+	   make cle
+	   make db
+
+data	   contains the model atoms I have build this week
+	   which mimic the effects of high lying levels
+	   accurately.  use files here like atom.<el><ion>,
+	   e.g. atom.fe13, when working in testd.   
+
+Alin: Use only the current atoms, e.g. not those ending the filename with "o" (old) or "big" (full level calculations, much slower). 
+	   "big" might be useful if you know what you are doing, but not for starting up things.
+	   you use them by overwriting the "ATOM" file in "test_cle" with what you want to synthesize. 
+
+
+
+testd	   a directory I used to build preliminary databases
+	   edit the file DB.INPUT to make larger databases,
+	   see the table in overleaf file. This is read by
+	   db in the directory current
+Alin: You will have these  contents in the db_compact folder that you download from drive(rather than testd). 
+	db_obs, is a fake observation that is also generated with the database, 
+	but you can feed it any observation you want as long as you format the data correctly
+	using the DBinvert.ipynp scripts.
+
+	A table for the compact database can be found in the presentation!
+
+
+
+Alin:idl and python 	directories that contain useful routines to read cle input and output atmosphere files. 
+				Most important are atmrd and outrd.
+				You have idl versions and terminal script versions for python for the same things 
+				(transfering these to a simpler jupyter format is on my todo list.). 
+				Inside the scripts you can find more explanations and call examples.
+
+Alin:test_cle_dip	This is a working runtime of a CLE simulation. Wou just have to add an atom from "data" and rename it to "ATOM" and then run ./cle in a terminal.
+			You might need to create a symbolic link linking "cle" from the "current" directory. 
+			The atoms here are the most up to date versions we have. The "ls" ones are classic, while the "mix" ones have new calculations included.
+
+			After that you can use outrd to read the outputs of the simulation. A new file "OUT" will be created.
+			If you want to change resolution and etc, you can have a look at "grid.dat"
+			"dipole.dat" controls the dipole that is simulated, there are also other routines like "sheet.dat" that you can experiment with
+			INPUT gives you a range of parameters that govern the simulation, including which routine to use; eg. DIPOLE.
+
+............................................................
+seek	   contains various python things-
+	   find.py  - this will read the DB****DAT files and
+	   also the OB****DAT file to find / match
+	   observations to database
+
+
+	   find.py:  check the argsort vs argpartition;
+	   change the value of counts in thius file to seek
+	   dependence of algorithm performance on s/n.
+	   counts= total number of counts over line (must include
+	   background generally, and integrated over the line profile);
+	   it would be good to build databases for different important ions,
+	   using sub-directories in testd, e.g. fe13/, si9/ etc.
+ALIN:You wont have the seek as we're not using it explicitly anymore
+
+
+	   

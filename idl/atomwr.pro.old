@@ -1,0 +1,184 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Document name: atomwr.pro
+; Created by:    Phil &, High Altitude Observatory/NCAR, Boulder CO, October 28, 1994
+;
+; Last Modified: Wed Sep 22 09:44:46 1999 by judge (Phil Judge) on pika
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+PRO atomwr,file,head, nocomm=nocomm, multi = multi, help=help, magnetic = magnetic
+;+
+; PROJECT:
+;       HAOS-DIAPER
+;
+; NAME:
+;       atomwr
+;
+; PURPOSE: 
+;	Writes atomic data in standard MULTI format from
+;	file, including collisional data and header information
+;
+;       
+; EXPLANATION:
+;       
+; CALLING SEQUENCE: 
+;      atomwr,file,coldata,head, nocomm=nocomm, help=help
+;
+; INPUTS:
+;	file: name of output file to which atomic data are written
+;
+; OPTIONAL INPUTS:
+;	coldata: structure containing collisional parameters
+;	head: structure containing header information
+;
+; OUTPUTS:
+;       None.  File file is written
+;
+; OPTIONAL OUTPUTS:
+;       None.
+;
+; KEYWORD PARAMETERS: 
+;       /help.  Will call doc_library and list header, and return
+;       /nocomm  No comments are written in file 
+;
+; CALLS:
+;      const, gencolwr, p_mul_wr1,strt_head,wr_head
+;
+; COMMON BLOCKS:
+;	catom
+;
+; RESTRICTIONS: 
+;       None.
+;
+; SIDE EFFECTS:
+;	if head is included in argument list but was undefined
+;       then strt_head is called and the default (minimal) header
+;       is written.
+;
+; EXAMPLE:
+;	To write data for the ion C IV in current directory:
+;               !REGIME=0  ; coronal regime, i.e. write collisional data
+;		ATOMWR,'atom.c4',head
+;	To write same data but with no header, no collisional data
+;               !REGIME=2  ; LTE regime, i.e. write collisional data
+;		ATOMWR,'atom.c4'
+;	To write same data with no header or collisional data,
+;		ATOMWR,'atom.c4'
+;
+; CATEGORY:
+;       
+; PREVIOUS HISTORY:
+;       
+;
+; MODIFICATION HISTORY:
+;   Written, P. Judge Feb 1 1992
+;   p. Judge Jan 1993.  Modified to include collisional data
+;   P. Judge Feb 1994.  Modified to include correct format 
+;                       for ITRAD=4 option, but INCORRECT data!.
+;   P. Judge Jun 1994.  Modified to include header output 
+;   P. Judge Jul 1994.  SDP prolog
+;   P. Judge Aug 1994.  Collisional data written if nparams ge 2
+;   P. Judge 10-Aug-1994.  Bug outputting fixed transition level indices fixed.
+;   P. Judge 10-Aug-1994.  Fixed 4I4 output for NK, NLINE, NCONT, NFIX to 4(1x,I4)
+;   October 28, 1994, P. Judge, HAOS-DIAPER prolog   
+;   August 12, 1996, P. Judge, use of !regime
+; VERSION:
+;       Version 1, October 28, 1994
+;-
+;
+@catom
+@cqn
+IF(N_ELEMENTS(help) GT 0 OR N_PARAMS(0) EQ 0) THEN BEGIN
+    doc_library,'atomwr'
+    RETURN
+ENDIF
+comment = (N_ELEMENTS(nocomm) EQ 0)
+GET_LUN,lu2
+openw,lu2,file
+;
+if(n_elements(head) gt 0) then begin 
+   sz=SIZE(head)
+   IF(sz(0) EQ 0) THEN strt_head,head
+   wr_head,lu2,head
+ENDIF
+;
+IF(N_ELEMENTS(cc) EQ 0) THEN const
+IF(comment) THEN PRINTF,lu2,'* WRITTEN BY ATOMWR ON ', systime()
+PRINTF,lu2, ATOMID
+atomid=STRTRIM(atomid,2)
+
+IF(comment) THEN PRINTF,LU2, "* ABND  AWGT"
+PRINTF,lu2,ABND,AWGT/UU, FORMAT='(2(1x,f7.2))'
+
+NCONT=NRAD-NLINE
+IF(comment) THEN PRINTF,lu2, "* NK,NLINE,NCONT,NRFIX"
+PRINTF,LU2, NK,NLINE,NCONT,NRFIX, FORMAT = $
+   '(4(1x,I8))'
+NRAD=NLINE+NCONT
+;
+;
+;
+IF (n_elements(magnetic) EQ 0) THEN begin
+   FOR I=0,NK-1 DO BEGIN
+      PRINTF,LU2, ev(i)*EE/CC/HH,g(i), $  
+         label(i), ion(i), FORMAT='(1x,f13.3,f6.2,2x,"''",a,"''",2x,i2)'
+   ENDFOR
+ENDIF ELSE BEGIN
+   str = '*       E cm-1    g   label                        ion  S   L   J   P  Lande G'
+
+   IF(comment) THEN printf,lu2,str
+   sss = 0.5*(qn_2sp1-1.)
+   lll = float(qn_bigl)
+   jjj = 0.5*(g-1.)
+   gl = lande_g(sss,lll,jjj)
+   par = fix(sss)*0+1
+   k = where(strupcase(qn_parity) EQ 'E',c)
+   IF(c NE 0) THEN par(k) = 0
+   FOR I=0,NK-1 DO BEGIN
+      PRINTF,LU2, ev(i)*EE/CC/HH,g(i), $  
+      label(i), ion(i), sss(i),lll(i),jjj(i),par(i),gl(i),$
+      FORMAT='(1x,f13.3,f6.2,2x,"''",a25,"''",2x,i2,3(1x,f3.1),1x,i1,1x,e11.4)'
+   ENDFOR
+ENDELSE
+IF (nline GT 0) THEN BEGIN
+   FOR KR=0,NLINE-1 DO BEGIN
+      IF(comment) THEN PRINTF,lu2,label(jrad(kr)-1),label(irad(kr)-1), $ 
+         convl(alamb(kr)), FORMAT='("*  ", a,2x,a,2x,f15.3)'
+      PRINTF,lu2, jrad(kr),irad(kr),f(kr),nq(kr),qmax(kr),q0(kr),$
+         iwide(kr),ga(kr),gw(kr),gq(kr), FORMAT= $
+         '(i4,i4,e10.3,1x,i3,1x,f5.1,1x,f5.1, 1x,i2,1x,3(1x,e9.2))'
+      IF(QMAX(KR) LT 0.0) OR (Q0(KR) LT 0.0) THEN BEGIN
+         PRINTF,LU2, q(*,kr)
+      ENDIF
+   ENDFOR
+ENDIF
+;
+;  write photoionization data
+;
+p_mul_wr1,lu2
+;
+;  FIXED TRANSITIONS PARAMETERS
+;
+if (nrfix gt 0) then begin
+  IF(comment) THEN printf,lu2,'* UP LO IPHO         A0       TRAD ITRAD'
+  for KF=0,NRFIX-1 do begin
+    printf,lu2, jfx(kf)+1,ifx(kf)+1,ipho(KF),a0(KF),trad(KF),itrad(KF),$
+     format='(i4,i3,i5,e11.3,f11.0,i6)'
+    IF(ITRAD(KF) EQ 4) THEN begin
+      print,'itrad=4 NOT IMPLEMENTED- WRITING DUMMY DATA'
+      printf,lu2, '* DUMMY DATA!! QUADRATURE HAS CHANGED!!'
+      printf,lu2, jfx(kf),ifx(kf),a0(kf), 30, 30.,3.,0,0.,0.,0.,format= $
+        '(i4,i4,e10.3,1x,i3,1x,f5.1,1x,f5.1, 1x,i2,1x,3(1x,e9.2))'
+    endif
+  endfor
+endif
+gencolwr,lu=lu2,nocomm = nocomm,multi = multi
+free_lun,lu2
+
+RETURN
+END
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; End of 'atomwr.pro'.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;

@@ -1,0 +1,31 @@
+
+31 Jan 2020
+
+ingest.py:
+
+	reads output from pca.f into the array S that is
+	inputs are pca.dat and the grid is in pca.hdr
+
+	This is then pickled in to the files
+	sdata.pkl
+	pcagrid.pkl
+
+
+	The sdata are stokes profiles that can be treated as real data
+	and/or test data where the geometry is stored in pcagrid.
+
+
+process.py
+
+	Generates decomposed data which is stored in 
+	pcadata.pkl
+	
+		- this contains u, sigma, coeff,nc u = principal vectors, sig=diagonals,
+		       		   	  	       coeff= projection of all training data on
+						       to the eigenvectors, nc = number of significant
+						       principal components.
+
+
+find.py
+
+	find the matches of a given dataset in the PCA database.  

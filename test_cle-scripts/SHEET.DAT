@@ -1,0 +1,19 @@
+*
+* sheet.dat
+* give
+* B,   TEMP, VEL, TURBV, SHEETN
+* 
+1.   1.6e6  0.  20.  1.e8
+*
+* skind- what kind of sheet?
+* put PLASMOID, LAMINAR, RANDOM
+PLASMOID
+* if LAMINAR or RADOM then we are done reading
+* if plasmoid the read number of plasmoids and y z positions and strengths
+5
+1.05 1.15 1.25 1.35 1.45
+0.8 0. 0. 0. 0. 
+100. 1.  1. 1. 1.
+*
+*end
+* 

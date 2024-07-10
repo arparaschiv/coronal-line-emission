@@ -1,0 +1,40 @@
+********************************************************************************
+*  LARGE-SCALE DIPOLE
+* Position of dipole relative to Sun center. X axis is LOS is phi=0
+* Z axis is theta=0
+* x,y,z
+0. 0.95  0.
+*
+* Orientation of dipole, projections on to (x,y,z) frame.
+* Note that x is LOS, and x=0 defines the plane of sky
+* xm ym zm
+0. 0. 1.
+* 
+* strength of dipole (dipole moment).  This yields strength of the 
+* magnetic field (it is used to derive the potential whose
+* grad yields vector magnetic field
+* 
+.03 1.e-5
+*
+********************************************************************************
+
+*
+* sheet.dat
+* give
+* B,   TEMP, VEL, TURBV, SHEETN
+* 
+  1.   1.6e6  0.  20.  1.e8
+*
+* skind- what kind of sheet?
+* put PLASMOID, LAMINAR, RANDOM
+PLASMOID
+* if LAMINAR or RADOM then we are done reading
+* if plasmoid the read number of plasmoids and y z positions and strengths
+5
+ 1.04 1.12 1.20 1.28 1.36
+ 0. 0. 0. 0. 0.
+* 1. 1. .3 .3 .1
+ 2. 1.  .5 .3 .1 
+*
+*end
+* 

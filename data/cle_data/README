@@ -1,0 +1,38 @@
+April 23, 2006
+December 21, 2012 updated PGJ, Fe11 added
+March 4 2020, updated PGJ, Fe XIII atomic model uses
+              CHIANTI v9 revised/corrected data, also
+	      includes a 4th level with collisions/
+	      branching ratios changed to reproduce a 34
+	      level calculation of intensities and P/I
+	      atom.fe13.old is the originally released
+	      incorrect file.  
+
+files are as follows.
+
+Original (unmodified collisions) files:  
+
+atom.fe10o
+atom.fe13o
+atom.fe14o
+atom.si10o
+atom.si9o
+
+Files modified for depolarizing effects of missing collisions
+(These have been updated in March 2020 to account for a coding
+error in collisions found in 2019):
+
+            CECOEF   WLMIN    WLMAX
+*atom.fe10   0.        6360.    6380.
+*atom.fe11   1.5e-9    7500    100000 
+*atom.fe13   2.e-9    10730    10820
+*atom.fe14   0.        5290     5320
+*atom.si10   0.8e-9   13000    15000
+*atom.si9    5.e-8    39000    40000 
+
+The number after the file name gives the value of CECOEF needed in file
+INPUT to account for linear polarization in addition to these data. 
+
+Abundances of 7.6 and 7.52 were used for Iron and Silicon (Allen 1973).
+
+

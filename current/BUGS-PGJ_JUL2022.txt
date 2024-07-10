@@ -1,0 +1,86 @@
+LIST OF BUGS/IMPROVEMENTS, IN ORDER OF MOST RECENT FIXES FIRST.
+
+
+BUG: 1 JUL  2022  PGJ
+
+emission.f    - wrong normalization of IQUV emission coefficients, ame for all I,Q,U,V
+
+	The original version returned IQUV values
+        larger by an erroneous factor of 3.155 * (QNORM/10)	
+
+	Consequently the intensities originally output depended on QNORM, which is wrong
+	However, the relative values of IQUV are all originally correct because the calculations
+	are all optically thin.
+
+	Therefore all plasma diagnoses depending on ratios only are correct even if calculated
+	with this bug.
+
+	Thanks to S. Gibson for passing on this bug.
+
+
+IMPROVEMENT:  5 Mar 2020  PGJ
+
+atom.*, input.* in data/
+
+	   Data for Fe XIII have been replaced with modern CC
+	   collision strengths not older DW values
+
+	   All atomic ion files now include one allowed E1 transition
+	   to an appropriate excited delta-n=0 transition to mimic all
+	   excitations to all higher levels using adjusted collision
+	   strengths and in some cases branching ratios.
+
+
+
+IMPROVEMENT June 6 2019 PGJ
+
+colrd.f gammae.f, gammai.f, gammas.f
+
+	Added a key ICOLLMM which flags if sums over M to M' collisions are
+	needed.  This can speed up collision calculations by skipping loops
+	in the gamma*f routines.
+
+	CPU 
+	251.449u 0.650s 4:14.06 99.2%	0+0k 0+0io 0pf+0w  New code 26 level
+	1.267u 0.014s 0:01.30 97.6%	0+0k 0+0io 0pf+0w  New code  3 level
+	0.668u 0.008s 0:00.69 95.6%	0+0k 0+0io 0pf+0w  no collisions
+
+	2.457u 0.014s 0:02.49 98.7%	0+0k 0+0io 0pf+0w  Original code
+	0.677u 0.008s 0:00.70 95.7%	0+0k 0+0io 0pf+0w  no collisions
+
+
+BUG June 6 2019 PGJ 
+
+gammae.f, gammai.f, gammas.f
+
+	  Incorrect denominators (2*AA1+1) in two places have been corrected in this routines.
+	  Thanks to Tom Schad for noting part of this problem.
+
+	  Sum over multipole order K was incorrectly done from -K to K. Now the do loop
+	  is DO M=0,K,2    This error led to an overestimate of collisional rates through
+	  a sum over CASSUME (for strong coupling and exchange collisions only).
+
+colrd.f gammai.f gammas.f  : not a "bug" per se but an addition if spin forbidden
+          transitions are computed in large atomic models.
+
+ 	  Cases of spin-forbidden lines are now treated in the same way as M1
+	  transitions by assuming that the cross-sections are dominated by strong
+	  coupling and/or exchange of electrons.
+
+
+EFFECTS: In some ways these two sets of changes comepnsate for one
+another for calculations ehich include spin-changing or delta J > 1
+collisions. For small atomic models with no such transitions the revised
+code will produce smaller collision rates, by factors of two or so.
+For those atoms constructed to take care of collisions via allowed
+E1 transitions, these changes are exected to be small.
+
+	  
+BUG 16 Jan 2014  PGJ
+
+gammae.f - incorrect implementation of CECOEFF has been replaced
+	 with a reduction in J^2_0 in the routine field_int.f
+
+	 Note that this led to inconsistent statistical equilibrium calculations
+	 when collisions were included and when CECOEF in the INPUT file was non-zero.
+

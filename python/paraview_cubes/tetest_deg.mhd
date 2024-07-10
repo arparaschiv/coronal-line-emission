@@ -1,0 +1,14 @@
+ObjectType = Image
+NDims = 3
+BinaryData = True
+BinaryDataByteOrderMSB = False
+CompressedData = True
+CompressedDataSize = 20735
+TransformMatrix = 1 0 0 0 1 0 0 0 1
+Offset = 0 0 0
+CenterOfRotation = 0 0 0
+ElementSpacing = 1 1 1
+DimSize = 150 70 219
+AnatomicalOrientation = ???
+ElementType = MET_DOUBLE
+ElementDataFile = tetest_deg.zraw

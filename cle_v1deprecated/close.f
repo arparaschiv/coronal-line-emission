@@ -1,0 +1,30 @@
+C
+C PURPOSE: CLOSE A FILE
+C
+C INPUTS:
+C         IUNIT   UNIT NUMBER TO CLOSE
+C OUTPUTS:
+C
+C COMMON:
+C
+C COMMENTS: OCTOBER 6, 1999, P. JUDGE
+C 
+      SUBROUTINE CLOSE(IUNIT)
+C
+C  CLOSES A FILE
+C
+C  IUNIT=UNIT NUMBER
+C  LU(K) IS .TRUE. IF K CORRESPONDS TO AN OPEN FILE
+C
+      INCLUDE 'PREC'
+      INCLUDE 'COPCL'
+C
+      CLOSE(IUNIT)
+      LU(IUNIT)=.FALSE.
+      IUNIT=0
+C
+      RETURN
+      END
+C
+C***********************************************************************
+C

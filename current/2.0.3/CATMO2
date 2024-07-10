@@ -1,0 +1,3 @@
+C
+      COMMON /CATMO2/ VTURB,BH(5),HD(6),RHOM
+

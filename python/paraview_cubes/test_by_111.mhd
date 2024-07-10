@@ -1,0 +1,14 @@
+ObjectType = Image
+NDims = 3
+BinaryData = True
+BinaryDataByteOrderMSB = False
+CompressedData = True
+CompressedDataSize = 106315
+TransformMatrix = 1 0 0 0 1 0 0 0 1
+Offset = 0 0 0
+CenterOfRotation = 0 0 0
+ElementSpacing = 1 1 1
+DimSize = 50 99 216
+AnatomicalOrientation = ???
+ElementType = MET_DOUBLE
+ElementDataFile = test_by_111.zraw

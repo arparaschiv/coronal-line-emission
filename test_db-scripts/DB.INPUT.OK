@@ -1,0 +1,8 @@
+*  NY NED  NX  NBPHI NBTHETA
+   11   5   5   30   19
+* XED multiplier for electron densities
+  10.000  3.0000  1.0000  0.300  0.100  
+*  YMIN   YMAX  XMIN    XMAX  BPMIN    BPMAX   BTMIN   BTMAX
+  1.0102  3.5  -2.50   2.50   0.  6.28318548  0.0000  3.14159274  
+* BFIELD (field strength G)
+  1.0

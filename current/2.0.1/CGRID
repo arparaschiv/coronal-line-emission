@@ -1,0 +1,8 @@
+C
+C  SPECIFIES 3D GRID
+C
+      COMMON /GRIDF/GXMIN,GXMAX,GX,
+     *		    GYMIN,GYMAX,GY,
+     *		    GZMIN,GZMAX,GZ
+      COMMON /GRIDI/NGX,NGY,NGZ
+     

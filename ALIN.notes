@@ -1,0 +1,12 @@
+Current version is CLE V2 ; march 2020
+Old CLE V1 is in cle_v1(last) directory
+
+
+20200305
+- The db.dat file was altered. 
+- The atom file mimics a 27 level atom by using only 3 levels. for j=0,1,2 and then the transitions ofr the two infrared lines and a visible line are computed. 
+- Copied db.input into each ion subfolder so we know what generated the database.
+- atom13 file in data directory is 4lvl and does not have the correction for the intermediate coupling for lvl2. This is slightly different from the 3lvl fe13 in the test_db dir (also older by generation date). Which one is more reliable to use?
+- the si9 has 4lvls while the si10 has 3 levels using the models in data.
+in find at line
+- what is the order of the lines in the save files? there are two lines in the db file for 3 lines in the atom file. There are 6 lines for both files on the si9 config

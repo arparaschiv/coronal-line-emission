@@ -1,0 +1,10 @@
+July 13, 2006
+
+Run the cle program in this directory and then compare the 
+output in file OUT with the file
+
+out_example 
+
+to ensure all is well.  To within numerical roundoff, these should
+be identical.
+

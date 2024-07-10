@@ -1,0 +1,235 @@
+C
+C     PURPOSE: MAIN PROGRAM TO COMPUTE DATABASE OF COMPONENTS
+C     NEEDED FOR SE SOLUTIONS AS A FUNCTION OF RADIUS
+C
+C INPUTS:
+C
+C OUTPUTS:
+C
+C COMMON:
+C
+C COMMENTS: JAN 9, 2020 P. JUDGE
+C 
+      PROGRAM DBTINY
+C
+C  MAIN PROGRAM
+C
+C
+      INCLUDE 'PREC'
+      INCLUDE 'PARAM'
+      INCLUDE 'CSLINE'
+      INCLUDE 'CATOM'
+      INCLUDE 'SGNM'
+      INCLUDE 'CINTS'
+      INCLUDE 'CGRID'
+      INCLUDE 'CSE'
+      INCLUDE 'CCONST'
+      INCLUDE 'CBCNST'
+      INCLUDE 'CORON'
+      INCLUDE 'CATMOS'
+      INCLUDE 'CATMO2'
+      INCLUDE 'CLU'
+      INCLUDE 'CINPUT'
+C
+      PARAMETER (SQRT2=.14142135623730950488E1)
+      PARAMETER (SQRT3=.17320508075688772935E1)
+C
+      DIMENSION EM_FACT(0:4)
+C
+      PARAMETER(NED=4)
+      DIMENSION XED(NED)
+      DATA XED /3.,1.,.3,.1/
+C
+      SQRTPI=SQRT(PI)
+      CALL CPTIME('DB ',0,0,5)
+C
+      CALL START
+
+      CALL OPEN(LDB,'db.dat',0,'NEW')
+      CALL OPEN(LDBASC,'db.hdr',1,'NEW')
+      CALL OPEN(LDBDESC,'db.desc',1,'NEW')
+      
+C      
+C  GRIDS, ALWAYS THE SAME...
+C
+C     for comparison dataset:
+C     use scale=7
+C      
+      scale=1
+      NGY=29/scale
+      GYMIN=1.0001
+      GYMAX=5.0001
+      GYSTEP=(GYMAX-GYMIN)/NGY
+      NBPHI=90/scale
+      BPHIMIN=0.
+      BPHIMAX=PI/TWO
+      BPHISTEP=(BPHIMAX-BPHIMIN)/(NBPHI-1)
+C
+C
+C  SET B TO 1 GAUSS AT VARIOUS ORIENTATIONS.      
+C     AT STRONG FIELD LIMIT ONLY ANGLES ENTER SE EQUATIONS.
+C  COMPUTE ONLY ALONG GZ=0.
+C      
+      BFIELD=1.
+C     
+C     LARMOR FREQUENCY 
+C     
+      ALARMOR=(1.0E-8*(0.25E0/PI)*(EE/EM)*BFIELD)/QNORM
+      GZ=0.
+      GX=0.
+C     
+C     SOME THERMAL PARAMETERS
+C     
+      TEMP=2.E6
+      HSCALE= 50.E8/RSUNCM
+C
+C     multiple densities      
+C
+C
+C  WRITE THE GRID INFORMATION TO UNFORMATTED FILE
+C
+      WRITE(LDBDESC,*)"# NED  NGY  NBPHI"
+      WRITE(LDBASC,*)NED,NGY,NBPHI
+      WRITE(LDBDESC,*)"# ED(1) - ED(NED)"
+      WRITE(LDBASC,101) (XED(I),I=1,NED)
+      WRITE(LDBDESC,*)"# GYMIN,GYMAX,BPHIMIN,BPHIMAX"
+      WRITE(LDBASC,101)GYMIN,GYMAX,BPHIMIN,BPHIMAX
+      WRITE(LDBDESC,*)"# NLINE"
+      WRITE(LDBASC,*)NLINE
+ 101  FORMAT(1X,1P,10(E10.3,1x),0P)
+      DO KR=1,NLINE
+	IJ0=IRAD(KR)
+	IJ1=JRAD(KR)
+	RJ0=AJ(IJ0)
+	RJ1=AJ(IJ1)
+C
+C CALCULATE C_COEFF WHEN N = 1
+C
+	HNU=HH*CC / (ALAMB(KR)/1.E8)
+	C_COEFF=A(KR)*HNU/FOUR/PI
+C
+	G0=GLAND(IJ0)
+	G1=GLAND(IJ1)
+	GEFF=0.5*(G0+G1)+0.25*(G0-G1)*(RJ0*(RJ0+ONE)-RJ1*(RJ1+ONE))
+C
+C   CALCULATE DCOEFF AND ECOEFF
+C
+	D_COEFF=-SG(NINT(RJ0+RJ1))*SQRT(THREE*(TWO*RJ1+1))
+     /	 *FUN6J(ONE,ONE,TWO,RJ1,RJ1,RJ0)
+C
+        E_COEFF=THREE*SQRT(TWO*RJ1+ONE)
+     /	 *(SG(NINT(RJ1-RJ0))*G1*SQRT(RJ1*(RJ1+ONE)*(TWO*RJ1+ONE))
+     /	 *FUN6J(ONE,TWO,ONE,RJ1,RJ1,RJ1)
+     /	 *FUN6J(ONE,ONE,ONE,RJ1,RJ1,RJ0)
+     /	 -G0*SQRT(RJ0*(RJ0+ONE)*(TWO*RJ0+ONE))
+     /	 *FUN9J(ONE,TWO,ONE,RJ0,RJ1,ONE,RJ0,RJ1,ONE))
+C
+C MAGNETOGRAM STOKES V
+C
+	SCL=C_COEFF*1.E-13*ALAMB(KR)
+C
+C     GET FACTOR FOR EMISSION IN STOKES V:
+C     PHI =  EXP(-V*V)/(SQRTPI*DNYD)  and  integral = 1 / DNYD
+C     PHIP=  (-2.0*V/DNYD)*PHI  and integral of ABS  is 2*(PHI(0)- 0.) = 2 /SQRTPI/DNYD
+C
+	VFACT=-(SQRT2/SQRT3)*ALARMOR
+        VFACT=VFACT*(2./SQRTPI)*SCL
+C        
+C 
+C        
+        WRITE(LDBDESC,*) '# LAMBDA     G0         G1         GEFF       C_COEFF  
+     /  D_COEFF     E_COEFF     VFACT'
+
+        write(LDBASC,101) ALAMB(KR), G0,G1,GEFF,C_COEFF, D_COEFF, E_COEFF,
+     /       VFACT
+C         
+      END DO
+      CALL CLOSE(LDBASC)
+      CALL CLOSE(LDBDESC)
+      kount=0
+      DO IED=1,NED
+         DO J=1,NGY
+            WRITE(*,*)'DB DOING PROJECTED RADIUS Y=',J,'/',NGY,'...'
+            GY=FLOAT(J-1)*GYSTEP+GYMIN
+            H=GY-1.0
+C     
+C     ALLEN 1973 PAGE 177 FIRST 2 TERMS PLUS HSE COMPT,
+C     IGNORING 3RD NEAR SUN COMPONENT
+C
+            BAUMBACH = 1.E8*(0.036/GY**1.5 + 1.55/GY**6.)
+            ED=3.e8*EXP(- H/HSCALE) + BAUMBACH
+            ED= ED * XED(IED)
+            TOTH=.8*ED
+            PTURBV=30./2./SQRT(2.)
+            VTURB=PTURBV/QNORM
+            PVEL=0.
+            VEL=PVEL/QNORM
+            TOTN=10.**(ABND-12.)*TOTH*EQION(TEMP)
+            DO I=1,5
+               HD(I)=0.
+            ENDDO
+            HD(6)=TOTH
+C     
+C  COMPUTE NECESSARY ANGLES TAKEN FROM CORONA.F:
+C  THAT DEPEND ONLY ON X,Y,Z  (NO B INFORMATION)
+C            
+            GX2=GX*GX
+            GY2=GY*GY
+            GZ2=GZ*GZ
+C     
+            ALPHA=-ATAN2(GX,SQRT(GY2+GZ2))
+            SALPHA=SIN(ALPHA)
+            CALPHA=COS(ALPHA)
+C     
+            BETA=ATAN2(GY,GZ)
+            SBETA=SIN(BETA)
+            CBETA=COS(BETA)
+C     
+C     FOR COMMON BLOCK CORONA, T0TENS ANGLES, GEOMETRY NOT B FIELD
+C     
+            THETA=0.5*PI+ALPHA
+            PGAMMA=BETA
+C     
+C     
+C     LOOP OVER BPHI AND BTHETA, THESE ARE GIVEN IN THE CLE FRAME
+C            
+            DO L=1,NBPHI
+               BPHI=BPHIMIN+(L-1)*BPHISTEP
+               BTHETA=PI/2. 
+C     
+C     HERE ARE MAGNETIC FIELD COMPONENTS IN THE CLE X,Y,Z FRAME
+C      
+               XB=SIN(BTHETA)*COS(BPHI)
+               YB=SIN(BTHETA)*SIN(BPHI)
+               ZB=COS(BTHETA)
+C     
+C rotation of magnetic vector by beta      around x-axis
+C
+C      YZB=SBETA*YB+CBETA*ZB
+C
+               YYB= CBETA*YB -SBETA * ZB
+C     
+               XXB= CALPHA*XB+SALPHA*(SBETA*YB+CBETA*ZB)
+               ZZB=-SALPHA*XB+CALPHA*(SBETA*YB+CBETA*ZB)
+C     
+C     COMPUTE POLAR ANGLES OF B IN THE "S'-FRAME"
+C     (VAN VLECK ANGLE = 54.7356103173)
+C THETAB AND PHIB RETURNED ARE:
+C     These are varthetab and varphib in eq 42 44 of CJ99 & figure 5
+C     (angles between LVS and B and planes containing B LVS and k LVS
+C                  
+               THETAB=ATAN2(SQRT(XXB*XXB+YYB*YYB),ZZB)	
+               PHIB=ATAN2(YYB,XXB)
+               
+               CALL DBTINYE
+
+               kount=kount+1
+            ENDDO
+         END DO
+      END DO
+      CALL CLOSE(LDB)
+      CALL CPTIME('DB ',0,1,5)
+      CALL STOP('NORMAL END')
+      END
+      
+

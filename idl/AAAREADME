@@ -1,0 +1,77 @@
+Documentation December 5, 2005, P. Judge
+
+Main files to read the output from cle:
+      atmrd.pro   read atmospheric parameters from binary file.
+      outrd.pro   read Stokes vector data from ascii output file.
+		  This assumes the mapping software in the SSW tree
+		  is present. 
+
+Other needed procedures:
+      SSW mapping tree
+      getwrd.pro  (From ASTRON library) gets words from a string
+      readto.pro  reads ASCII file until a certain string is found
+      qu2vect.pro converts computed Q,U vectors (computed by CLE along 
+		  the "Z" direction, i.e. N-S in the observer's frame)
+		  to polarization vectors
+      redp.pro    changes number of points in Stokes Q,U to enable
+		  clearer plotting
+      pline.pro   over-plots lines following local polarization vector
+		  in the plane of the sky
+
+
+
+======================================================================
+Examples.
+======================================================================
+
+After running the cle fortran program, assume that the files ATMOS and OUT
+have been written. Then
+
+IDL> atmrd,atm,file='ATMOS'  ; read atmospheric data
+IDL> help,/structure,atm
+** Structure ATMOS, 13 tags, length=3032780, data length=3032780:
+   FILE            STRING    'ATMOS'
+   MODEL           STRING    'FFL   '
+   X               FLOAT     Array[48]
+   Y               FLOAT     Array[47]
+   Z               FLOAT     Array[48]
+   BX              FLOAT     Array[48, 47, 48]
+   BY              FLOAT     Array[48, 47, 48]
+   BZ              FLOAT     Array[48, 47, 48]
+   NNE             FLOAT     Array[48, 47, 48]
+   TE              FLOAT     Array[48, 47, 48]
+   V               FLOAT     Array[48, 47, 48]
+   VT              FLOAT     Array[48, 47, 48]
+   README          STRING    Array[10]
+
+
+IDL> print,atm.readme
+variables are
+file:     file containing atmospheric parameters
+model:    name of fortran routine used to determine coronal parameters
+x,y,z:    positions in solar radii
+          (x is along LOS, y is E-W, z N-S in observer's frame)
+bx,by,bz: x,y,z-components of magnetic field in G
+nne:      electron density in /cm3
+te:       electron temperature in K
+v:        LOS velocity in km/s (+ve is a red-shift)
+vt:       "turbulent" velocity in km/s
+
+IDL> help,atm.bx          ; value of magnetic field along x-axis (LOS)
+<Expression>    FLOAT     = Array[48, 47, 48]
+
+IDL> b=sqrt(atm.bx*atm.bx+atm.by*atm.by+atm.by*atm.by) ; magnitude of B
+
+IDL> outrd,file='OUT',s  ; read Stokes vector s 
+
+IDL> plot_map(s(0))  ; map of the intensity
+IDL> plot_map(s(3))  ; map of the Stokes V
+IDL> p=s(1) 
+IDL> p.data=sqrt(s(1).data*s(1).data + s(2).data*s(2).data)  ; magnitude of linear poln
+IDL> plot_map,p,title='P'
+IDL> p.data=p.data/s(0).data  ; P/I
+IDL> plot_map,p,title='P/I'
+
+
+
+
