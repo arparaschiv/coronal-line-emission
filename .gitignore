@@ -138,5 +138,6 @@ test_cle_3dipole/
 test_cle_degeneracy/
 ## others
 python/paraview_cubes/
+python/paraview_cubes/
 ##
 *.pdf
