@@ -95,6 +95,7 @@ C
       WRITE(LDBSC,313) BTHMIN, BTHMAX
  313  FORMAT(2(1X,F10.6))
  314  FORMAT(1X,F10.2)
+C 315  FORMAT(1x,A)
 C
 C  logarithmic multipliers      
 C
@@ -113,6 +114,7 @@ C
             WRITE(LDBSC,314)CONVL(ALAMB(KR))
          ENDIF
       ENDDO
+      WRITE(LDBSC,*) 0
       CALL CLOSE(LDBSC)
 C
 C  PLANE Z=0

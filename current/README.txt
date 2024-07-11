@@ -12,6 +12,13 @@ ln -s path_to/current/db20x ../work_dir/db20x # (SOFT)for working directory link
 2.x.x CHANGELOG
 ------------------------------------------------------------------------
 
+-------
+2.0.4.2
+------------------------------------------------------------------------
+10 July 2024 ARP - MAINTENANCE
+
+- DB code update: small change to write in teh db.hdr file that the database is written by CLE 
+
 ------------------------------------------------------------------------
 2.0.4.1
 ------------------------------------------------------------------------

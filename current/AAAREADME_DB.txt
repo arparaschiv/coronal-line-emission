@@ -8,7 +8,7 @@ cd cle
 
 BUILD EXEC:
 
-      cd current
+      cd current/x.x.x/
       make db
 
 (note that this version of 29 dec uses only one value of B=1G
