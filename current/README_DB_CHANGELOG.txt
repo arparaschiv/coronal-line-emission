@@ -1,0 +1,225 @@
+Readme for CLE and DB fortran code
+Additional readmes are in each directory
+Executable filenames are dbxxx where xxx are version numbers (no dots). 
+Versioning is X.Y.Z.T: X are majore releases, Y are feature updates, Z are bugfixes, T are small maitenanteance fixex
+Symbolic links are in the "current" directory
+
+commands for linking using cle 2.x.x:
+ln 2.0.x/db ./db20x  # (HARD) for local linking
+ln -s path_to/current/db20x ../work_dir/db20x # (SOFT)for working directory linking 
+
+------------------------------------------------------------------------
+2.x.x CHANGELOG
+------------------------------------------------------------------------
+-------
+2.0.5
+------------------------------------------------------------------------
+10 Aug 2024 ARP - Changed the way databases are named to make pycelp integration more smooth
+
+- DB code update: Tha database naming conventions are changed to db_hx.xx_d0.00 where h and d are sampled densities. Densities are not captured in CLD databases individually.
+
+-------
+2.0.4.2
+------------------------------------------------------------------------
+10 July 2024 ARP - MAINTENANCE
+
+- DB code update: small change to write in the db.hdr file that the database is written by CLE 
+
+------------------------------------------------------------------------
+2.0.4.1
+------------------------------------------------------------------------
+26 Sep 2023 ARP - MAINTENANCE
+
+- DB makefile update to include more libraries like glibc for static building. this adds more compatibility for older linux distributions.
+   Thanks to Rahul Sharma for notifying us about this.
+------------------------------------------------------------------------
+2.0.4
+------------------------------------------------------------------------
+xx Jan 2023 ARP - BUG
+
+Colcal.f  - Fixed wrong coefficient order in the second reciprocal term for proton collisions.
+  Thanks to S. Gibson for passing on this bug.
+
+- Enabled implicit double precision calculations via PREC. This should be enabled as some internal calculations might go out of REAL value precision. 
+emission.f splin.f sheet.f and sheetx.f updated functions for double precision (ALOG --> DLOG, etc). Disabling double precision will require changing back to REAL functions for compilation.
+
+db.f, dbe.f - small update to fix density and grid position intervals. The ICMP function for compressed database writing is now disabled. The final database entries are stored as REAL as no final Stokes quantity should be beyond standard precision (as opposed to internal quantities that might become problematic).
+
+emission.f - calculation for the E coefficient are simplified using the D and F formulations of D&S2020 instead of the canonical way via eq. 36c of C&J1999. This is faster and is analytically equivalent.
+------------------------------------------------------------------------
+2.0.3
+------------------------------------------------------------------------
+1 JUL  2022  PGJ - BUG
+
+emission.f    - wrong normalization of IQUV emission coefficients, for all I,Q,U,V
+
+   The original version returned IQUV values
+        larger by an erroneous factor of 3.155 * (QNORM/10) 
+
+   Consequently the intensities originally output depended on QNORM, which is wrong
+   However, the relative values of IQUV are all originally correct because the calculations are all optically thin.
+
+   Therefore all plasma diagnoses depending on ratios only are correct even if calculated with this bug.
+
+   Thanks to S. Gibson for passing on this bug.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+2.0.2.1
+------------------------------------------------------------------------
+28 May 2021 ARP - SMALL FIXES
+
+This version fixes the obsolete B inputs. The db.input is now simplified to:
+***********
+*  NY    NED  NX   NBPHI NBTHETA    NB
+   50    10   60   180   90          1
+*  LNEMIN  LNEMAX YMIN   YMAX   XMIN    XMAX  BPMIN    BPMAX   BTMIN   BTMAX     
+   -1.5    2.3   1.101   1.26  -1.51    1.51   0.  6.28318548  0.0000  3.14159274
+***********
+
+Another small change was made to not normalize the output database profiles directly via dbe.f. 
+Normalization can be done inside the CLEDB python processing. This was decided because some users might want to try (unadvised at this time) line combinations of different ions,
+As a consequence, each ion calculation is now stored individually.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+2.0.2
+------------------------------------------------------------------------
+DEC 29 2021 PGJ - BUG 
+This version reverts to uses only one value of B=1G. Field strengths can scaled by CLEDB. This decreases both database size and computational demands for a solution. 
+
+This version still needs an older DB.INPUT that still contains an remnant array input
+for B that is not needed.  The resulting "db.hdr' does not contain 
+the B array. 
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+2.0.1
+------------------------------------------------------------------------
+Dec 1 2020 PGJ - IMPROVEMENT & BUG
+
+Updates in db.f dbe.f and emission.f. 
+This adds another dimension to the databases allowing to compute for multiple magnetic field strengths. )
+
+The manual multiplier for densities has been replaced by an exponential scaling. e.g. -1.5-1.5 --> 0.003-31* a base expected coronal density (Allen 1973).
+The range for field strengths is also a log scale measure.
+
+Consequentially db.input is changed.
+db.input example:
+***********
+*  NY    NED  NX   NBPHI NBTHETA    NB
+   50    10   60   180   90          1
+*  LNEMIN  LNEMAX YMIN   YMAX   XMIN    XMAX  BPMIN    BPMAX   BTMIN   BTMAX         LBMIN   LBMAX
+   -1.5    2.3   1.101   1.26  -1.51    1.51   0.  6.28318548  0.0000  3.14159274     0.       0.01
+***********
+
+Dec 21 2020 PAR - IMPROVEMENT
+
+- added a new dipolv.f routine that should compute dipole fields with user input, temperature, los speeds, and turbulent speeds.
+
+To use, change the input file to dipolv and use the dipolv.dat input in run dir.
+dipolv.f is dependent on dipole.f as dipot and qupot functions NEED to be defined there.
+- added dipolv name and typesetting in corona.f
+Note: dipolv needs to not be named dipolev because the filename length is hard-coded to 6 characters!
+------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+2.0.0
+------------------------------------------------------------------------
+Jan 7 2020 PGJ - IMPROVEMENT (CODE OPTIMIZATION, ADDITION OF K CORONAL EMISSION, DATABASE BUILDING)
+
+Code optimization and improvement over CLE 1.x versions
+Introduced database computation capabilities via db.f and dbe.f
+
+db.input example:
+***********
+*  NY    NED  NX   NBPHI NBTHETA
+   31    10   60   180   90
+* XED multiplier for electron densities 
+   200.00  100.00 50.00  5.00 2.50 1.00  0.50  0.10  0.01 0.005  
+*  YMIN   YMAX   XMIN    XMAX  BPMIN    BPMAX   BTMIN   BTMAX
+  1.001   1.101  -1.51    1.51   0.  6.28318548  0.0000  3.14159274  
+* BFIELD (field strength G)
+  1.0
+***********
+
+5 Mar 2020  PGJ - IMPROVEMENT 
+
+atom.*, input.* in data/
+
+      Data for Fe XIII have been replaced with modern CC
+      collision strengths not older DW values
+
+      All atomic ion files now include one allowed E1 transition
+      to an appropriate excited delta-n=0 transition to mimic all
+      excitations to all higher levels using adjusted collision
+      strengths and in some cases branching ratios.
+
+SEP 1 2020 ARP - SMALL CHANGE
+
+db.f PARAMETER(MED=10) change to MED=100 to allow for multiple (>10) electron density calculations.
+------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+PRE 2.0 changes
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+June 6 2019 PGJ - IMPROVEMENT
+
+colrd.f gammae.f, gammai.f, gammas.f
+
+   Added a key ICOLLMM which flags if sums over M to M' collisions are
+   needed.  This can speed up collision calculations by skipping loops
+   in the gamma*f routines.
+
+   CPU 
+   251.449u 0.650s 4:14.06 99.2% 0+0k 0+0io 0pf+0w  New code 26 level
+   1.267u 0.014s 0:01.30 97.6%   0+0k 0+0io 0pf+0w  New code  3 level
+   0.668u 0.008s 0:00.69 95.6%   0+0k 0+0io 0pf+0w  no collisions
+
+   2.457u 0.014s 0:02.49 98.7%   0+0k 0+0io 0pf+0w  Original code
+   0.677u 0.008s 0:00.70 95.7%   0+0k 0+0io 0pf+0w  no collisions
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+June 6 2019 PGJ - BUG
+
+gammae.f, gammai.f, gammas.f
+
+     Incorrect denominators (2*AA1+1) in two places have been corrected in this routines.
+     Thanks to Tom Schad for noting part of this problem.
+
+     Sum over multipole order K was incorrectly done from -K to K. Now the do loop
+     is DO M=0,K,2    This error led to an overestimate of collisional rates through
+     a sum over CASSUME (for strong coupling and exchange collisions only).
+
+colrd.f gammai.f gammas.f  : not a "bug" per se but an addition if spin forbidden
+          transitions are computed in large atomic models.
+
+     Cases of spin-forbidden lines are now treated in the same way as M1
+     transitions by assuming that the cross-sections are dominated by strong
+     coupling and/or exchange of electrons.
+
+
+EFFECTS: In some ways these two sets of changes comepnsate for one
+another for calculations ehich include spin-changing or delta J > 1
+collisions. For small atomic models with no such transitions the revised
+code will produce smaller collision rates, by factors of two or so.
+For those atoms constructed to take care of collisions via allowed
+E1 transitions, these changes are exected to be small.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------     
+16 Jan 2014 PGJ - BUG
+
+gammae.f - incorrect implementation of CECOEFF has been replaced
+    with a reduction in J^2_0 in the routine field_int.f
+
+    Note that this led to inconsistent statistical equilibrium calculations
+    when collisions were included and when CECOEF in the INPUT file was non-zero.
+------------------------------------------------------------------------

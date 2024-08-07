@@ -1,0 +1,134 @@
+C
+C PURPOSE: ADMINISTERS CALLING FOR SYNTHESIS OF M1  LINES AT EACH VOXEL
+C
+C INPUTS: 
+C
+C OUTPUTS:
+C
+C COMMON:
+C
+C COMMENTS: OCTOBER 6, 1999, P. JUDGE
+C
+	SUBROUTINE DBE
+C
+C  SUBROUTINE FOR GENERATION OF EMISSION COEFFICIENTS
+C
+	INCLUDE 'PREC'
+	INCLUDE 'PARAM'
+	INCLUDE 'CSE'
+	INCLUDE 'CGRID'
+	INCLUDE 'CATOM'
+	INCLUDE 'CATMOS'
+	INCLUDE 'CSLINE'
+	INCLUDE 'CORON'
+	INCLUDE 'CCONST'
+	INCLUDE 'CINPUT'
+	INCLUDE 'CINTS'
+	INCLUDE 'CLU'
+C
+     	DIMENSION AA(MJTOT,MJTOT),BB(MJTOT)
+     	DIMENSION T0(0:3,0:2)
+	INTEGER*2 ICMP
+	LOGICAL DISK,IGNORE
+        DIMENSION SUMS(MLINE,0:5)
+C
+C  LOOP OVER THE LOS COORDINATE
+C
+	DO KR=1,NLINE
+	   DO M=0,4
+	      DO NY=1,NQ(KR)
+		 EMISS(KR,M,NY)=ZERO
+	      END DO
+	   END DO
+	END DO
+C       
+C       CALCULATE SOLAR PARAMETERS (HEIGHT, DENSITY, TEMPERATURE, 
+C  MICROTURBULENCE, MAGNETIC FIELD IN CORONA)
+C       
+	GX2=GX*GX
+	GY2=GY*GY
+	GZ2=GZ*GZ
+	RRR=GZ*GZ+GY*GY
+	
+C       
+	ALPHA=-ATAN2(GX,SQRT(RRR))
+C       
+C       
+	CALL PROFIL
+C       
+C       LTE POPULATIONS AND COLLISIONAL RATES TO BE STORED
+C       
+	IF(ICOLL .NE. 0) THEN 
+	   CALL LTEPOP
+	   CALL COLCAL
+	ENDIF
+C       
+C       BUILD AND SOLVE STATISTICAL EQUILIBRIUM EQUATIONS
+C       
+	CALL SE0_BUILD(NDIM)
+	CALL SOLVE(NDIM,AA,BB)
+	CALL SE0_COPY(NDIM,BB)
+C       
+C       SOLVE FOR EMERGENT STOKES PROFILES
+C       
+	CALL T0TENS(T0)
+	QN=QNORM*1.E5/CC
+	DO KR=1,NLINE
+	   WW=ALAMB(KR)
+	   IF(WW .GE. WLMIN .AND. WW .LE. WLMAX) THEN 
+	      CALL EMISSION(KR,T0)
+C         PAR: next two lines compute the alignment
+	      IJ1=JRAD(KR)
+	      SUMS(KR,5)=RHO(IJ1,2)/RHO(IJ1,0)
+	      IF(IWLINE .GT. 0) WRITE (LDB) ((EMISS(KR,ISS,NY),ISS=0,3),NY=1,nq(kr))
+C         PAR: Change this do to 4 to compute magnetograph Stokes V
+	      DO IM=0,3
+		 	SUMS(KR,IM)=0.
+		 	DO NY=1,NQ(KR)-1
+		    	SIGN=+1.
+		    	ADD=EMISS(KR,IM,NY)
+		    	IF(IM .GE. 3 .AND. Q(NY,KR) .LT. 0.) SIGN=-1.
+		    	SUMS(KR,IM)=SUMS(KR,IM) + SIGN*ADD*WQ(NY,KR)*WW
+		 	ENDDO
+	      END DO
+C
+C  write compressed integer values
+C
+C         PAR description of diverse outputs
+C         Normalized output
+C         WRITE(LDB) ( SUMS(KR,IM)/SUMS(1,0),IM=0,3 )
+C         Double precision output as long as PREC is enabled
+C  	      WRITE(LDB) ( SUMS(KR,IM),IM=0,3 )
+C         Single precision output after a double precision calculation via PREC
+          WRITE(LDB) ( REAL(SUMS(KR,IM)),IM=0,3 )
+C         Obsolete compression enabled function
+C         WRITE(LDB) ( ICMP( SUMS(KR,IM) / SUMS(1,0) ),IM=0,3 ) 
+c         WRITE(LDB) ( ICMP( SUMS(KR,IM)),IM=0,4 ) 
+
+	   ENDIF
+	END DO
+	RETURN
+	END
+C
+C	
+C ### the exponential function is unstable at certain configurations
+c	INTEGER*2 FUNCTION ICMP(X)
+c	INCLUDE 'PREC'
+c	IMX=32767.
+Cc	ALMX=0.
+Cc	ALMN=-15.
+Cc	D=ALMX-ALMN
+c	D=15.
+Cc	
+Cc get integers 
+Cc
+c	IF(X .GE. 0.) THEN
+c	   A=LOG10(X)
+c	   ICMP= -A/D*IMX
+c	ELSE
+c	   A=LOG10(-X)
+c	   ICMP=   +A/D* IMX
+c	ENDIF
+c	RETURN
+c	END
+

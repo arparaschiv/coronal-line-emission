@@ -1,0 +1,32 @@
+C
+C PURPOSE: CAUSES A STOP WITH A TEXT WRITTEN TO UNIT LJOBLO
+C     CLOSES ALL OPEN FILES
+C
+C INPUTS:
+C
+C OUTPUTS:
+C
+C COMMON:
+C
+C COMMENTS: OCTOBER 6, 1999, P. JUDGE
+C 
+      SUBROUTINE STOP(TEXT)
+C
+C  
+      INCLUDE 'PREC'
+      INCLUDE 'CLU'
+      INCLUDE 'COPCL'
+C
+      CHARACTER*(*) TEXT
+C
+      WRITE(LJOBLO,100) TEXT
+  100 FORMAT(1X,A)
+      DO 200 I=1,MAXLU
+        IF(LU(I)) CLOSE(I)
+  200 CONTINUE
+C
+      STOP
+      END
+C
+C***********************************************************************
+C
