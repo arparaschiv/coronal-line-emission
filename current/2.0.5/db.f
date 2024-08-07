@@ -131,9 +131,10 @@ C
       DO J=1,NGY
          GY=FLOAT(J-1)*GYSTEP+GYMIN
 C        KK = INT((GY-1)*1000.)
+         KK = INT((GY)*100)
 C        originally kk was GY-1000 to start from the limb; changed in 2.0.5
-         write(FILEO,973) ZZ, GY
-         CALL OPEN(LDB,FILEO // '_d0.00.DAT',-1,'NEW')
+         write(FILEO,973) ZZ, KK
+         CALL OPEN(LDB,FILEO // '_d0000.DAT',-1,'NEW')
          WRITE(*,*)'DB DOING PROJECTED RADIUS Y=  ',J
      *        ,'/',NGY,'...', FILEO
          
