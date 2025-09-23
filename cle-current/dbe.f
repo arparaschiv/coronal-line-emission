@@ -28,6 +28,7 @@ C
 C
      	DIMENSION AA(MJTOT,MJTOT),BB(MJTOT)
      	DIMENSION T0(0:3,0:2)
+	INTEGER*2 ICMP
 	LOGICAL DISK,IGNORE
         DIMENSION SUMS(MLINE,0:4)
 C
@@ -87,10 +88,39 @@ C
 		    IF(IM .GE. 3 .AND. Q(NY,KR) .LT. 0.) SIGN=-1.
 		    SUMS(KR,IM)=SUMS(KR,IM) + SIGN*ADD*WQ(NY,KR)*WW
 		 ENDDO
+		 
 	      END DO
-	      WRITE(LDB) ((SUMS(KR,IM)),IM=0,4)
+C
+C  write compressed integer values
+C
+C	      WRITE(LDB) ( SUMS(KR,IM)/SUMS(1,0),IM=0,3 )
+C	      WRITE(LDB) ( ICMP( SUMS(KR,IM) / SUMS(1,0) ),IM=0,3 ) 
+		  WRITE(LDB) ( ICMP( SUMS(KR,IM)),IM=0,3 ) 
+
 	   ENDIF
 	END DO
+	RETURN
+	END
+C
+C	
+C
+	INTEGER*2 FUNCTION ICMP(X)
+	INCLUDE 'PREC'
+	IMX=32767.
+C	ALMX=0.
+C	ALMN=-15.
+C	D=ALMX-ALMN
+	D=15.
+C	
+C  get integers 
+C
+	IF(X .GE. 0.) THEN
+	   A=LOG10(X)
+	   ICMP= -A/D*IMX
+	ELSE
+	   A=LOG10(-X)
+	   ICMP=   +A/D* IMX
+	ENDIF
 	RETURN
 	END
 

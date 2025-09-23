@@ -51,9 +51,9 @@ C
       CALL START
 
       CALL CSTRIP(LPIN,'DB.INPUT')
-      READ(LDUMS,*) NGY, NED, NGX, NBPHI, NBTH, NB
+      READ(LDUMS,*) NGY, NED, NGX, NBPHI, NBTH
       READ(LDUMS,*) EMIN, EMAX,GYMIN, GYMAX, GXMIN, GXMAX,
-     *   BPHIMIN, BPHIMAX,BTHMIN, BTHMAX,  BMIN, BMAX
+     *   BPHIMIN, BPHIMAX,BTHMIN, BTHMAX
       CALL CLOSE(LDUMS)
 C     
 C
@@ -68,21 +68,23 @@ C ANGULAR GRID FOR B AT EACH "VOXEL"
 C
       BTHSTEP=(BTHMAX-BTHMIN)/NBTH
       BPHISTEP=(BPHIMAX-BPHIMIN)/NBPHI
+
+C FIXED AT 1G
+
+      BFIELD=1.
 C
 C  WRITE THE GRID INFORMATION TO FORMATTED FILE
 C
-      WRITE(LDBSC,*) NED,NGX,NBPHI,NBTH, NB
+      WRITE(LDBSC,*) NED,NGX,NBPHI,NBTH
       WRITE(LDBSC,313) EMIN,EMAX
       WRITE(LDBSC,313) GXMIN,GXMAX
       WRITE(LDBSC,313) BPHIMIN,BPHIMAX
       WRITE(LDBSC,313) BTHMIN, BTHMAX
-      WRITE(LDBSC,313) BMIN,BMAX
  313  FORMAT(2(1X,F10.6))
  314  FORMAT(1X,F10.2)
 C
 C  logarithmic multipliers      
 C
-      XBMULT=10.** ((BMAX-BMIN)/(NB-1))
       XEMULT=10.** ((EMAX-EMIN)/(NED-1))
 C
 C
@@ -128,11 +130,10 @@ C
             WRITE(*,*)'    DB DOING ELECTRON DENSITY=',IED
      *           ,'/',NED,' MULTIPLIER = ',XED
             DO K=1,NGX
-C               WRITE(*,*)'        DB DOING X=           ',K
-C     *              ,'/',NGX,'...'
                GX=FLOAT(K-1)*GXSTEP+GXMIN
                RB=SQRT(GX*GX+GY*GY+GZ*GZ)
                H=RB-1.0
+               WRITE(*,*)'    DB DOING X=',GX
 C     
 C     ALLEN 1973 PAGE 177 FIRST 2 TERMS PLUS HSE COMPT,
 C     IGNORING 3RD NEAR SUN COMPONENT
@@ -150,6 +151,10 @@ C
                   HD(I)=0.
                ENDDO
                HD(6)=TOTH
+C
+C SET UP RADIAL DEPENDENCE OF B
+C
+               B0=0.5/RB/RB + 0.004/(RB-.9970)**3
 C     
 C     COMPUTE NECESSARY ANGLES TAKEN FROM CORONA.F:
 C     THAT DEPEND ONLY ON X,Y,Z  (NO B INFORMATION)
@@ -168,6 +173,8 @@ C
 C     
 C     FOR COMMON BLOCK CORONA, T0TENS ANGLES, GEOMETRY NOT B FIELD
 C     
+C     THETA = 0.5PI + ALPHA, DEFINING REFERENCE DIRECTION FOR LINEAR POLARIZATION
+C
                THETA=0.5*PI+ALPHA
                PGAMMA=BETA
 C     
@@ -201,23 +208,17 @@ C     (angles between LVS and B and planes containing B LVS and k LVS
 C     
                      THETAB=ATAN2(SQRT(XXB*XXB+YYB*YYB),ZZB)	
                      PHIB=ATAN2(YYB,XXB)
-
-                     BFIELD=10.**BMIN/XBMULT
-                     DO IB=1,NB 
-                        CALL DBE
-                        count=count+1.
-                        BFIELD= XBMULT*BFIELD
-                        ALARMOR=(1.0E-8*(0.25E0/PI)*(EE/EM)*BFIELD)
-     *                        /QNORM
-                     ENDDO
-                     
+                     CALL DBE
+                     COUNT=COUNT+1.
+                     ALARMOR=(1.0E-8*(0.25E0/PI)*(EE/EM)*BFIELD)
+     *                    /QNORM
                   ENDDO
                ENDDO
             END DO
          END DO
          CALL CLOSE(LDB)
       END DO
-      write(*,*)count, " calculations done"
+      write(*,*)COUNT, " calculations done"
       CALL CPTIME('DB ',0,1,5)
       CALL STOP('NORMAL END')
       END

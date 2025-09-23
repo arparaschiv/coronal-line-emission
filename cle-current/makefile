@@ -46,21 +46,6 @@ solve.o trap.o uv.o splin.o dipole.o dipolv.o watmos.o zl.o
 
 cle: $(CLE)
 	$(LINK) $(CLE) $(LFLAGS) -o cle
-	ln -f cle ../cle
-
-DBTINY = dbtiny.o dbtinye.o atom.o atom1.o c2.o c3.o c5.o c6.o \
-ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o dvary.o \
-cstrip.o cptime.o cuser.o dlamb.o eqsyst.o ffl.o pnl.o freq.o \
-freqc.o freql.o getwrd.o grid.o gammae.o gammai.o gammas.o iatomn.o \
-eqion.o ljust.o ltepop.o open.o planck.o profil.o \
-rewind.o rinput.o rot.o sconst.o second_unix.o start.o stop.o watom.o \
-t0tens.o emission.o fctsg.o fieldb.o field_int.o fn1.o \
-fn2.o fun3j.o fun6j.o fun9j.o wdebug.o outs.o \
-r1.o r2.o r3.o r4.o r5.o r6.o se0_build.o se0_copy.o \
-solve.o trap.o uv.o splin.o dipole.o dipolv.o watmos.o zl.o
-
-dbtiny: $(DBTINY)
-	$(LINK) $(DBTINY) $(LFLAGS) -o dbtiny
 
 
 
@@ -90,9 +75,7 @@ cle.o:PREC PARAM CGRID CCONST CBCNST
 pca.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
 pcae.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
 db.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
-dbtiny.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
 dbe.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
-dbtinye.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
 close.o:PREC COPCL
 colcal.o:PREC PARAM COLL CATOM CATMOS CATMO2 CCONST CINPUT CLU
 colrd.o:PREC PARAM COLL CATOM CATMOS CATMO2 CCONST CINPUT CLU
@@ -105,7 +88,7 @@ cs.o:PREC PARAM CSE CLU SGNM CINTS
 cstrip.o:PREC CLU
 cuser.o:CCONST CGRID CINPUT CLU
 dipole.o:PREC CCONST CLU CGRID
-dipolv.o:PREC CCONST CLU CGRID	
+dipolv.o:PREC CCONST CLU CGRID
 dlamb.o:PREC PARAM CATOM CCONST
 emission.o:PREC PARAM CSE CSLINE CCONST CATOM CORON SGNM CINTS CLU
 eqsyst.o:PREC
@@ -255,3 +238,4 @@ uv.o:PREC PARAM
 watmos.o:PREC PARAM CINPUT CGRID CATMOS CATMO2 CATOM CLU 
 watom.o:PREC PARAM CATOM CCONST CSLINE CLU CINPUT
 zl.o:PREC PARAM CCONST CGRID CINPUT CLU CINTS
+
