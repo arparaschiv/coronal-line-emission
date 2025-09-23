@@ -24,7 +24,7 @@
 FC=gfortran
 LINK=gfortran 
 DEBUG=       
-OPT= -ffixed-line-length-none 
+OPT= -ffixed-line-length-none -Wextra -o3
 LFLAGS=$(DEBUG)
 FFLAGS=$(OPT) $(DEBUG)
 
@@ -34,7 +34,7 @@ FFLAGS=$(OPT) $(DEBUG)
 	$(FC) $(FFLAGS) $*.f -c -o $*.o
 
 CLE = cle.o m1synth.o atom.o atom1.o c2.o c3.o c5.o c6.o \
-ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o\
+ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o dvary.o \
 cstrip.o cptime.o cuser.o dlamb.o eqsyst.o ffl.o pnl.o freq.o \
 freqc.o freql.o getwrd.o grid.o gammae.o gammai.o gammas.o iatomn.o \
 eqion.o ljust.o ltepop.o open.o planck.o profil.o \
@@ -47,6 +47,36 @@ solve.o trap.o uv.o splin.o dipole.o watmos.o zl.o
 cle: $(CLE)
 	$(LINK) $(CLE) $(LFLAGS) -o cle
 
+DBTINY = dbtiny.o dbtinye.o atom.o atom1.o c2.o c3.o c5.o c6.o \
+ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o dvary.o \
+cstrip.o cptime.o cuser.o dlamb.o eqsyst.o ffl.o pnl.o freq.o \
+freqc.o freql.o getwrd.o grid.o gammae.o gammai.o gammas.o iatomn.o \
+eqion.o ljust.o ltepop.o open.o planck.o profil.o \
+rewind.o rinput.o rot.o sconst.o second_unix.o start.o stop.o watom.o \
+t0tens.o emission.o fctsg.o fieldb.o field_int.o fn1.o \
+fn2.o fun3j.o fun6j.o fun9j.o wdebug.o outs.o \
+r1.o r2.o r3.o r4.o r5.o r6.o se0_build.o se0_copy.o \
+solve.o trap.o uv.o splin.o dipole.o watmos.o zl.o
+
+dbtiny: $(DBTINY)
+	$(LINK) $(DBTINY) $(LFLAGS) -o dbtiny
+
+
+
+DB = db.o dbe.o atom.o atom1.o c2.o c3.o c5.o c6.o \
+ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o dvary.o \
+cstrip.o cptime.o cuser.o dlamb.o eqsyst.o ffl.o pnl.o freq.o \
+freqc.o freql.o getwrd.o grid.o gammae.o gammai.o gammas.o iatomn.o \
+eqion.o ljust.o ltepop.o open.o planck.o profil.o \
+rewind.o rinput.o rot.o sconst.o second_unix.o start.o stop.o watom.o \
+t0tens.o emission.o fctsg.o fieldb.o field_int.o fn1.o \
+fn2.o fun3j.o fun6j.o fun9j.o wdebug.o outs.o \
+r1.o r2.o r3.o r4.o r5.o r6.o se0_build.o se0_copy.o \
+solve.o trap.o uv.o splin.o dipole.o watmos.o zl.o
+
+db: $(DB)
+	$(LINK) $(DB) $(LFLAGS) -o db
+
 atom.o:PREC PARAM CATOM CATMOS CSLINE CCONST CINTS CLU
 atom1.o:PREC PARAM CATOM CATMOS CSLINE CCONST CLU CSE CINTS
 c2.o:PREC
@@ -56,11 +86,18 @@ c6.o:PREC
 ce.o:PREC PARAM CSE SGNM CINTS
 ci.o:PREC PARAM CSE SGNM CINTS
 cle.o:PREC PARAM CGRID CCONST CBCNST 
+pca.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
+pcae.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
+db.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
+dbtiny.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
+dbe.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
+dbtinye.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CSLINE CORON CCONST CBCNST  CINPUT CINTS CLU
 close.o:PREC COPCL
 colcal.o:PREC PARAM COLL CATOM CATMOS CATMO2 CCONST CINPUT CLU
 colrd.o:PREC PARAM COLL CATOM CATMOS CATMO2 CCONST CINPUT CLU
 convl.o:PREC
 corona.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CCONST CORON CLU
+dvary.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CCONST CORON CLU
 sheet.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CCONST CORON CLU
 cptime.o:PREC CLU
 cs.o:PREC PARAM CSE CLU SGNM CINTS

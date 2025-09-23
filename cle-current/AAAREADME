@@ -2,6 +2,7 @@ Notes on the program CLE, by P. Judge.
 Original: December 1, 2005
 Updated:  July 13, 2006
 Updated: Dec  21, 2012  (makefiles put into one file, makefile.osx)
+Updated: Jan 7 2020 (code optimization, addition of K coronal emission)
 
 WHAT THE CODE DOES
 ------------------
@@ -67,4 +68,41 @@ Thus, at spherical polar position (RAD, THET, PH) the
 routine returns the magnitude of magnetic field B, and its
 orientation (by polar angles T and P) and the thermal
 parameters and velocities. 
+
+
+UPDATE: JAN 7 2020 (CODE OPTIMIZATION, ADDITION OF K CORONAL EMISSION)
+
+Modifications have been made to the following code:
+
+include files:
+	CATOM
+	GRDPAR	
+	PARAM
+
+subroutines and functions, these are documented within each .f file
+
+	atom
+	c2
+	c6
+	ce
+	colcal
+	colrd
+	corona
+	cuser
+	dipole
+	emission    K-coronal emission added
+	eqion
+	field_int
+	field_int_allen
+	field_int_gauss
+	gammae
+	gammai
+	gammas
+	outs
+	r4
+	rinput
+	se0
+	se0
+	watmos
+	wdebug
 

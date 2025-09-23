@@ -6,7 +6,7 @@ P. Judge.
 Directories:
 ------------
 
-cle/           source code (current version. Github tags point to previous versions)
+cle-current/   source code (current version. Github tags point to previous versions)
 data/          data needed by the program (atomic models, ionization
                balance, grid, input options) Separate directories for CLE and db exist.
 idl/           some idl procedures to read and plot output

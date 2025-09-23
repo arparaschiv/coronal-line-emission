@@ -83,6 +83,9 @@ C
       ELSE IF(CORNAM(1:5) .EQ. 'CUSER') THEN 
          IPRINT=1
          CALL CUSER(RB,TB,PB,BS,TS,PS,PNE,TOTH,PT,PVEL,PTURBV,IPRINT)
+       ELSE IF(CORNAM(1:5) .EQ. 'DVARY') THEN 
+         IPRINT=1
+         CALL DVARY(RB,TB,PB,BS,TS,PS,PNE,TOTH,PT,PVEL,PTURBV,IPRINT)
        ELSE IF(CORNAM(1:5) .EQ. 'SHEET') THEN 
          IPRINT=1
          CALL SHEET(RB,TB,PB,BS,TS,PS,PNE,TOTH,PT,PVEL,PTURBV,IPRINT)
@@ -97,18 +100,26 @@ C
       BTHETA=TS
       BPHI=PS
 C     
+C HERE ARE MAGNETIC FIELD COMPONENTS IN THE CLE X,Y,Z FRAME
+C      
       XB=SIN(BTHETA)*COS(BPHI)
       YB=SIN(BTHETA)*SIN(BPHI)
       ZB=COS(BTHETA)
-C     
-      YZB=SBETA*YB+CBETA*ZB
-C     
-      XXB=CALPHA*XB+SALPHA*YZB
-      YYB=CBETA*YB-SBETA*ZB
-      ZZB=-SALPHA*XB+CALPHA*YZB
+C
+C rotation by beta      
+C      this is rotation of sqrt(y^2+z^2) by -beta around x axis
+C      YZB=SBETA*YB+CBETA*ZB, this is along new z' axis
+C      new y' is CBETA*YB - SBETA*ZB
+      YYB= CBETA*YB -SBETA * ZB
+C
+C     then this is rotation by alpha around y' axis 
+C
+      XXB= CALPHA*XB+SALPHA*(SBETA*YB+CBETA*ZB)
+      ZZB=-SALPHA*XB+CALPHA*(SBETA*YB+CBETA*ZB)
 C     
 C     COMPUTE POLAR ANGLES OF B IN THE "S'-FRAME"
 C     (VAN VLECK ANGLE = 54.7356103173)
+C     These quantities are the lower case vartheta_B and varphi_B of CJ99 fig 5
 C     
       THETAB=ATAN2(SQRT(XXB*XXB+YYB*YYB),ZZB)	
       PHIB=ATAN2(YYB,XXB)
