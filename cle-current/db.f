@@ -60,14 +60,27 @@ C
       CALL OPEN(LDBSC,'db.hdr',1,'NEW')
 C      
 C  GRIDS
-C      
-      GXSTEP=(GXMAX-GXMIN)/NGX
-      GYSTEP=(GYMAX-GYMIN)/NGY
+C     
+c     PAR --- updated ngx and ngy to ngx-1 and ngy-1 to keep intervals 
+C           symetric with respect to gxmax and gxmin 
+C           IFs corrects for cases where only 1 position 
+C           in height of depth is requested
+      IF (NGX.GT.1) THEN
+            GXSTEP=(GXMAX-GXMIN)/(NGX-1)
+      ELSE  
+            GXSTEP=0
+      ENDIF
+      IF (NGY.GT.1) THEN
+            GYSTEP=(GYMAX-GYMIN)/(NGY-1)
+      ELSE
+            GYSTEP=0
+      ENDIF
 C
 C ANGULAR GRID FOR B AT EACH "VOXEL"
 C
-      BTHSTEP=(BTHMAX-BTHMIN)/NBTH
       BPHISTEP=(BPHIMAX-BPHIMIN)/NBPHI
+      BTHSTEP=(BTHMAX-BTHMIN)/NBTH
+
 
 C FIXED AT 1G
 
@@ -82,6 +95,7 @@ C
       WRITE(LDBSC,313) BTHMIN, BTHMAX
  313  FORMAT(2(1X,F10.6))
  314  FORMAT(1X,F10.2)
+C 315  FORMAT(1x,A)
 C
 C  logarithmic multipliers      
 C
@@ -100,6 +114,7 @@ C
             WRITE(LDBSC,314)CONVL(ALAMB(KR))
          ENDIF
       ENDDO
+      WRITE(LDBSC,*) 0
       CALL CLOSE(LDBSC)
 C
 C  PLANE Z=0
@@ -210,8 +225,8 @@ C
                      PHIB=ATAN2(YYB,XXB)
                      CALL DBE
                      COUNT=COUNT+1.
-                     ALARMOR=(1.0E-8*(0.25E0/PI)*(EE/EM)*BFIELD)
-     *                    /QNORM
+C                    ALARMOR=(1.0E-8*(0.25E0/PI)*(EE/EM)*BFIELD)
+C     *                    /QNORM
                   ENDDO
                ENDDO
             END DO

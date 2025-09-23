@@ -73,7 +73,7 @@ C
 C           IF T IN [X(K)-ERROR,X(K)+ERROR] T = X(K)
 C
  10        ERROR = 1.0E-12
-        IF (T.NE.0) ERROR = ABS(1.0E-12*T)
+        IF (T.NE.0.) ERROR = ABS(1.0E-12*T)
         FOUND = SEARCH(X,T,1,N,K,ERROR)
         IF (.NOT.FOUND) GOTO 20
         SPLIN = Y(K)

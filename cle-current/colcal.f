@@ -97,7 +97,9 @@ C
 C     RECIPROCAL RELATION (EQ 7A OF LANDMAN 1975 A+A 43, 285)
 C     
             CMM(IHI,ILO,-MP,-M) = CDN + CMM(IHI,ILO,-MP,-M)
-            CMM(ILO,IHI,-MP,-M) = CUP + CMM(ILO,IHI,-MP,-M)
+            CMM(ILO,IHI,-M,-MP) = CUP + CMM(ILO,IHI,-M,-MP)
+C      PAR: 20221220 - changed to the above line
+C            CMM(ILO,IHI,-MP,-M) = CUP + CMM(ILO,IHI,-MP,-M)
          ENDIF
  100  CONTINUE
       RETURN

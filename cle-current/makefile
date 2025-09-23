@@ -24,7 +24,7 @@
 FC=gfortran
 LINK=gfortran 
 DEBUG=       
-OPT= -ffixed-line-length-none -Wextra -o3
+OPT= -ffixed-line-length-none -Wextra -o3 -static -static-libgcc -static-libstdc++ -static-libgfortran
 LFLAGS=$(DEBUG)
 FFLAGS=$(OPT) $(DEBUG)
 
@@ -61,7 +61,7 @@ r1.o r2.o r3.o r4.o r5.o r6.o se0_build.o se0_copy.o \
 solve.o trap.o uv.o splin.o dipole.o dipolv.o watmos.o zl.o
 
 db: $(DB)
-	$(LINK) $(DB) $(LFLAGS) -o db
+	$(LINK) $(DB) $(FFLAGS) -o db
 
 atom.o:PREC PARAM CATOM CATMOS CSLINE CCONST CINTS CLU
 atom1.o:PREC PARAM CATOM CATMOS CSLINE CCONST CLU CSE CINTS
@@ -144,9 +144,6 @@ uv.o:PREC PARAM
 watmos.o:PREC PARAM CINPUT CGRID CATMOS CATMO2 CATOM CLU 
 watom.o:PREC PARAM CATOM CCONST CSLINE CLU CINPUT
 zl.o:PREC PARAM CCONST CGRID CINPUT CLU CINTS
-
-
-
 
 
 
@@ -240,4 +237,3 @@ uv.o:PREC PARAM
 watmos.o:PREC PARAM CINPUT CGRID CATMOS CATMO2 CATOM CLU 
 watom.o:PREC PARAM CATOM CCONST CSLINE CLU CINPUT
 zl.o:PREC PARAM CCONST CGRID CINPUT CLU CINTS
-
