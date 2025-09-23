@@ -34,7 +34,7 @@ FFLAGS=$(OPT) $(DEBUG)
 	$(FC) $(FFLAGS) $*.f -c -o $*.o
 
 CLE = cle.o m1synth.o atom.o atom1.o c2.o c3.o c5.o c6.o \
-ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o dvary.o \
+ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o sheetx.o dvary.o \
 cstrip.o cptime.o cuser.o dlamb.o eqsyst.o ffl.o pnl.o freq.o \
 freqc.o freql.o getwrd.o grid.o gammae.o gammai.o gammas.o iatomn.o \
 eqion.o ljust.o ltepop.o open.o planck.o profil.o \
@@ -50,7 +50,7 @@ cle: $(CLE)
 
 
 DB = db.o dbe.o atom.o atom1.o c2.o c3.o c5.o c6.o \
-ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o dvary.o \
+ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o sheetx.o dvary.o \
 cstrip.o cptime.o cuser.o dlamb.o eqsyst.o ffl.o pnl.o freq.o \
 freqc.o freql.o getwrd.o grid.o gammae.o gammai.o gammas.o iatomn.o \
 eqion.o ljust.o ltepop.o open.o planck.o profil.o \
@@ -83,6 +83,7 @@ convl.o:PREC
 corona.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CCONST CORON CLU
 dvary.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CCONST CORON CLU
 sheet.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CCONST CORON CLU
+sheetx.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CCONST CORON CLU
 cptime.o:PREC CLU
 cs.o:PREC PARAM CSE CLU SGNM CINTS
 cstrip.o:PREC CLU
@@ -150,7 +151,7 @@ zl.o:PREC PARAM CCONST CGRID CINPUT CLU CINTS
 
 
 PGJTEST = pgjtest.o m1synth.o atom.o atom1.o c2.o c3.o c5.o c6.o \
-ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o\
+ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o sheetx.o\
 cstrip.o cptime.o cuser.o dlamb.o eqsyst.o ffl.o pnl.o freq.o \
 freqc.o freql.o getwrd.o grid.o gammae.o gammai.o gammas.o iatomn.o \
 eqion.o ljust.o ltepop.o open.o planck.o profil.o \
@@ -179,6 +180,7 @@ colrd.o:PREC PARAM COLL CATOM CATMOS CATMO2 CCONST CINPUT CLU
 convl.o:PREC
 corona.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CCONST CORON CLU
 sheet.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CCONST CORON CLU
+sheetx.o:PREC PARAM CGRID CATOM CATMOS CATMO2 CCONST CORON CLU
 cptime.o:PREC CLU
 cs.o:PREC PARAM CSE CLU SGNM CINTS
 cstrip.o:PREC CLU
