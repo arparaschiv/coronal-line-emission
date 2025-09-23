@@ -133,9 +133,9 @@ dmypy.json
 ## database test folders
 db20*/
 ## test folders
-test_cle/
-test_cle_3dipole/
-test_cle_degeneracy/
+#test_cle/
+#test_cle_3dipole/
+#test_cle_degeneracy/
 ## others
 python/paraview_cubes/
 python/paraview_cubes/

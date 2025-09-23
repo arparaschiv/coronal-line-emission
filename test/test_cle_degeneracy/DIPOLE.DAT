@@ -1,0 +1,33 @@
+*
+* Position of dipole relative to Sun center. 
+* X axis is LOS is phi=0
+* Z axis is theta=0
+* Y axis is phi=90
+* r (solar radii) theta phi (degrees)
+0.95 90. 90. 
+* Orientation of dipole, projections on to (x,y,z) frame.
+* Note that x is LOS, and x=0 defines the plane of sky
+* xm ym zm  
+* coords are binary and give direction for each axis, 100 is oriented alonx x axis, 001 si perpendicular to the limb and projected along z. 011 is inclined 45 degrees between the y and z axis
+0.0 0.0 1.0
+* 
+* strength of dipole (dipole moment).  This yields strength of the 
+* magnetic field (it is used to derive the potential whose
+* grad yields vector magnetic field
+* 
+8.
+*
+* Delta: dx dy dz for evaluation of vector grad
+1.e-4 
+* BASE- base electron density
+1.e9
+* Ntube: number of "flux tubes" with plasma on them in the dipole field
+1
+* alpha dalpha p dp: alpha is the scalar potential value,
+*                    dalpha measures the "thickness" of constant alpha shell
+*                    p the azimuthal angle. 
+*                    dp measures the thickness in azimuthal direction
+* 
+30. 0.5  0.07  3.5
+* alpha dalpha p dp
+*80.8 90.02 0.5 0.02
