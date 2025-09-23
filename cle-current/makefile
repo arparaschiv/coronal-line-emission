@@ -42,10 +42,11 @@ rewind.o rinput.o rot.o sconst.o second_unix.o start.o stop.o watom.o \
 t0tens.o emission.o fctsg.o fieldb.o field_int.o fn1.o \
 fn2.o fun3j.o fun6j.o fun9j.o wdebug.o outs.o \
 r1.o r2.o r3.o r4.o r5.o r6.o se0_build.o se0_copy.o \
-solve.o trap.o uv.o splin.o dipole.o watmos.o zl.o
+solve.o trap.o uv.o splin.o dipole.o dipolv.o watmos.o zl.o
 
 cle: $(CLE)
 	$(LINK) $(CLE) $(LFLAGS) -o cle
+	ln -f cle ../cle
 
 DBTINY = dbtiny.o dbtinye.o atom.o atom1.o c2.o c3.o c5.o c6.o \
 ce.o ci.o cs.o close.o colrd.o colcal.o convl.o corona.o sheet.o dvary.o \
@@ -56,7 +57,7 @@ rewind.o rinput.o rot.o sconst.o second_unix.o start.o stop.o watom.o \
 t0tens.o emission.o fctsg.o fieldb.o field_int.o fn1.o \
 fn2.o fun3j.o fun6j.o fun9j.o wdebug.o outs.o \
 r1.o r2.o r3.o r4.o r5.o r6.o se0_build.o se0_copy.o \
-solve.o trap.o uv.o splin.o dipole.o watmos.o zl.o
+solve.o trap.o uv.o splin.o dipole.o dipolv.o watmos.o zl.o
 
 dbtiny: $(DBTINY)
 	$(LINK) $(DBTINY) $(LFLAGS) -o dbtiny
@@ -72,7 +73,7 @@ rewind.o rinput.o rot.o sconst.o second_unix.o start.o stop.o watom.o \
 t0tens.o emission.o fctsg.o fieldb.o field_int.o fn1.o \
 fn2.o fun3j.o fun6j.o fun9j.o wdebug.o outs.o \
 r1.o r2.o r3.o r4.o r5.o r6.o se0_build.o se0_copy.o \
-solve.o trap.o uv.o splin.o dipole.o watmos.o zl.o
+solve.o trap.o uv.o splin.o dipole.o dipolv.o watmos.o zl.o
 
 db: $(DB)
 	$(LINK) $(DB) $(LFLAGS) -o db
@@ -104,6 +105,7 @@ cs.o:PREC PARAM CSE CLU SGNM CINTS
 cstrip.o:PREC CLU
 cuser.o:CCONST CGRID CINPUT CLU
 dipole.o:PREC CCONST CLU CGRID
+dipolv.o:PREC CCONST CLU CGRID	
 dlamb.o:PREC PARAM CATOM CCONST
 emission.o:PREC PARAM CSE CSLINE CCONST CATOM CORON SGNM CINTS CLU
 eqsyst.o:PREC
@@ -253,4 +255,3 @@ uv.o:PREC PARAM
 watmos.o:PREC PARAM CINPUT CGRID CATMOS CATMO2 CATOM CLU 
 watom.o:PREC PARAM CATOM CCONST CSLINE CLU CINPUT
 zl.o:PREC PARAM CCONST CGRID CINPUT CLU CINTS
-

@@ -12,7 +12,8 @@ C        Y
 C           X      
 C              PHI
 C                  THETA
-C                       LINE
+C                      LOG B
+C                          LINE
 C
 C INPUTS:
 C
@@ -42,8 +43,6 @@ C
       INCLUDE 'CATOM'
       INCLUDE 'CLU'
       INCLUDE 'CINPUT'
-      PARAMETER(MED=100)
-      DIMENSION XED(MED)
       CHARACTER*6 FILEO
       CHARACTER*2 ZZ
       ZZ='DB'
@@ -52,11 +51,9 @@ C
       CALL START
 
       CALL CSTRIP(LPIN,'DB.INPUT')
-      READ(LDUMS,*) NGY, NED, NGX, NBPHI, NBTH
-      READ(LDUMS,*) (XED(I),I=1,NED)
-      READ(LDUMS,*) GYMIN, GYMAX, GXMIN, GXMAX, BPHIMIN, BPHIMAX,
-     *              BTHMIN, BTHMAX
-      READ(LDUMS,*) BFIELD
+      READ(LDUMS,*) NGY, NED, NGX, NBPHI, NBTH, NB
+      READ(LDUMS,*) EMIN, EMAX,GYMIN, GYMAX, GXMIN, GXMAX,
+     *   BPHIMIN, BPHIMAX,BTHMIN, BTHMAX,  BMIN, BMAX
       CALL CLOSE(LDUMS)
 C     
 C
@@ -71,23 +68,41 @@ C ANGULAR GRID FOR B AT EACH "VOXEL"
 C
       BTHSTEP=(BTHMAX-BTHMIN)/NBTH
       BPHISTEP=(BPHIMAX-BPHIMIN)/NBPHI
-      GZ=0.
 C
 C  WRITE THE GRID INFORMATION TO FORMATTED FILE
 C
-      WRITE(LDBSC,*) NED,NGX,NBPHI,NBTH
-      WRITE(LDBSC,*) (XED(I),I=1,NED)
-      WRITE(LDBSC,*) GXMIN,GXMAX
-      WRITE(LDBSC,*) BPHIMIN,BPHIMAX
-      WRITE(LDBSC,*) BTHMIN, BTHMAX
-      WRITE(LDBSC,*) BFIELD
-      WRITE(LDBSC,*) NLINE
+      WRITE(LDBSC,*) NED,NGX,NBPHI,NBTH, NB
+      WRITE(LDBSC,313) EMIN,EMAX
+      WRITE(LDBSC,313) GXMIN,GXMAX
+      WRITE(LDBSC,313) BPHIMIN,BPHIMAX
+      WRITE(LDBSC,313) BTHMIN, BTHMAX
+      WRITE(LDBSC,313) BMIN,BMAX
+ 313  FORMAT(2(1X,F10.6))
+ 314  FORMAT(1X,F10.2)
+C
+C  logarithmic multipliers      
+C
+      XBMULT=10.** ((BMAX-BMIN)/(NB-1))
+      XEMULT=10.** ((EMAX-EMIN)/(NED-1))
+C
+C
+      KOUNT=0
+      DO KR=1,NLINE
+         IF ((ALAMB(KR) .GE. WLMIN).AND.(ALAMB(KR) .LE. WLMAX)) THEN
+            KOUNT=KOUNT+1
+         ENDIF
+      ENDDO
+      WRITE(LDBSC,*) KOUNT
+      DO KR=1,NLINE
+         IF ((ALAMB(KR) .GE. WLMIN).AND.(ALAMB(KR) .LE. WLMAX)) THEN
+            WRITE(LDBSC,314)CONVL(ALAMB(KR))
+         ENDIF
+      ENDDO
       CALL CLOSE(LDBSC)
+C
+C  PLANE Z=0
+C
       GZ=0.
-C     
-C     LARMOR FREQUENCY 
-C     
-      ALARMOR=(1.0E-8*(0.25E0/PI)*(EE/EM)*BFIELD)/QNORM
 C     
 C     SOME THERMAL PARAMETERS
 C     WRITE (ans, '(a, i3.3)') chr1, val1
@@ -101,10 +116,20 @@ C
          KK = INT((GY-1.0)*1000.)
          write(FILEO,973) ZZ, KK
          CALL OPEN(LDB,FILEO // '.DAT',-1,'NEW')
-         WRITE(*,*)'DB DOING PROJECTED RADIUS Y=',J
+         WRITE(*,*)'DB DOING PROJECTED RADIUS Y=  ',J
      *        ,'/',NGY,'...', FILEO
+         
+         XED=10.**EMIN/XEMULT
          DO IED=1,NED
+C
+C logarithmic      multiplier      
+C
+            XED= XEMULT*XED
+            WRITE(*,*)'    DB DOING ELECTRON DENSITY=',IED
+     *           ,'/',NED,' MULTIPLIER = ',XED
             DO K=1,NGX
+C               WRITE(*,*)'        DB DOING X=           ',K
+C     *              ,'/',NGX,'...'
                GX=FLOAT(K-1)*GXSTEP+GXMIN
                RB=SQRT(GX*GX+GY*GY+GZ*GZ)
                H=RB-1.0
@@ -113,8 +138,8 @@ C     ALLEN 1973 PAGE 177 FIRST 2 TERMS PLUS HSE COMPT,
 C     IGNORING 3RD NEAR SUN COMPONENT
 C     
                BAUMBACH = 1.E8*(0.036/RB**1.5 + 1.55/RB**6.)
-               ED=3.e8*EXP(- H/HSCALE) + BAUMBACH
-               ED= ED * XED(IED)
+               ED0=3.e8*EXP(- H/HSCALE) + BAUMBACH
+               ED= ED0 * XED
                TOTH=.8*ED
                PTURBV=30./2./SQRT(2.)
                VTURB=PTURBV/QNORM
@@ -146,27 +171,27 @@ C
                THETA=0.5*PI+ALPHA
                PGAMMA=BETA
 C     
-C     
-C     LOOP OVER BPHI AND BTH, THESE ARE GIVEN IN THE CLE FRAME
+C     LOOP OVER BPHI AND BTH
 C     
                DO L=1,NBPHI
                   BPHI=BPHIMIN+(L-1)*BPHISTEP
                   DO M=1,NBTH
                      BTH=BTHMIN+(M-1)*BTHSTEP
 C     
-C     HERE ARE MAGNETIC FIELD COMPONENTS IN THE CLE X,Y,Z FRAME
+C     HERE ARE UNIT MAGNETIC FIELD COMPONENTS IN THE CLE X,Y,Z FRAME
 C     
                      XB=SIN(BTH)*COS(BPHI)
                      YB=SIN(BTH)*SIN(BPHI)
                      ZB=COS(BTH)
 C     
-C     rotation by beta      around x-axis
-C     
-C     YZB=SBETA*YB+CBETA*ZB
+C     rotation by beta around x-axis
+C     in z=0 plane beta = pi/2.
+C
                      YYB= CBETA*YB -SBETA * ZB
+                     YZB=SBETA*YB+CBETA*ZB
 C     
-                     XXB= CALPHA*XB+SALPHA*(SBETA*YB+CBETA*ZB)
-                     ZZB=-SALPHA*XB+CALPHA*(SBETA*YB+CBETA*ZB)
+                     XXB= CALPHA*XB+SALPHA*YZB
+                     ZZB=-SALPHA*XB+CALPHA*YZB
 C     
 C     COMPUTE POLAR ANGLES OF B IN THE "S'-FRAME"
 C     (VAN VLECK ANGLE = 54.7356103173)
@@ -176,10 +201,16 @@ C     (angles between LVS and B and planes containing B LVS and k LVS
 C     
                      THETAB=ATAN2(SQRT(XXB*XXB+YYB*YYB),ZZB)	
                      PHIB=ATAN2(YYB,XXB)
+
+                     BFIELD=10.**BMIN/XBMULT
+                     DO IB=1,NB 
+                        CALL DBE
+                        count=count+1.
+                        BFIELD= XBMULT*BFIELD
+                        ALARMOR=(1.0E-8*(0.25E0/PI)*(EE/EM)*BFIELD)
+     *                        /QNORM
+                     ENDDO
                      
-                     CALL DBE
-                     
-                     count=count+1.
                   ENDDO
                ENDDO
             END DO
