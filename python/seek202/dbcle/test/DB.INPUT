@@ -1,5 +1,0 @@
-*  NY NED  NX  NBPHI NBTHETA  
-* standard 50 10 100 180 90
-50  15    100    180    90    
-*  LNMIN LNMAX  YMIN   YMAX  XMIN    XMAX  BPMIN    BPMAX   BTMIN   BTMAX      
-  -1.5 1.5      1.01   3.01  -2.0    2.0   0.  6.28318548  0.0000  3.14159274  

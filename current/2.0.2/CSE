@@ -1,3 +1,0 @@
-      COMMON /CSE/ RHO(0:MJTOT,0:MJTOT), SCOEFF(MJTOT,MJTOT),
-     *        E(MK), AJ(MK), ECOEFF(MK,MK), RADJ(0:2,MLINE),
-     *        WEIGHT(MJTOT)

@@ -1,0 +1,6 @@
+*  NY NED  NX  NBPHI NBTHETA  
+* standard 51 10 61 180 90
+51 20 35 120 60
+* ELNMIN ELNMAX   YMIN   YMAX    XMIN   XMAX   BPMIN     BPMAX      BTMIN     BTMAX   
+   -1.0   2.0   1.000   1.500   -0.85   0.85   0.000   6.28318548   0.000   3.14159274
+*  above line is important to be kept with 3 spaces and same number of decimals for bash script to work
