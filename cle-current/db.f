@@ -44,8 +44,8 @@ C
       INCLUDE 'CLU'
       INCLUDE 'CINPUT'
       CHARACTER*6 FILEO
-      CHARACTER*2 ZZ
-      ZZ='DB'
+      CHARACTER*4 ZZ
+      ZZ='DB_h'
       CALL CPTIME('DB ',0,0,5)
 C
       CALL START
@@ -78,8 +78,8 @@ C           in height of depth is requested
 C
 C ANGULAR GRID FOR B AT EACH "VOXEL"
 C
-      BPHISTEP=(BPHIMAX-BPHIMIN)/NBPHI
-      BTHSTEP=(BTHMAX-BTHMIN)/NBTH
+      BPHISTEP=(BPHIMAX-BPHIMIN)/(NBPHI-1)
+      BTHSTEP=(BTHMAX-BTHMIN)/(NBTH-1)
 
 
 C FIXED AT 1G
@@ -88,7 +88,7 @@ C FIXED AT 1G
 C
 C  WRITE THE GRID INFORMATION TO FORMATTED FILE
 C
-      WRITE(LDBSC,*) NED,NGX,NBPHI,NBTH
+      WRITE(LDBSC,*) NGY,NED,NGX,NBPHI,NBTH
       WRITE(LDBSC,313) EMIN,EMAX
       WRITE(LDBSC,313) GXMIN,GXMAX
       WRITE(LDBSC,313) BPHIMIN,BPHIMAX
@@ -130,9 +130,11 @@ C
  973  format(A,I4.4)
       DO J=1,NGY
          GY=FLOAT(J-1)*GYSTEP+GYMIN
-         KK = INT((GY-1.0)*1000.)
+C        KK = INT((GY-1)*1000.)
+         KK = INT((GY)*100)
+C        originally kk was GY-1000 to start from the limb; changed in 2.0.5
          write(FILEO,973) ZZ, KK
-         CALL OPEN(LDB,FILEO // '.DAT',-1,'NEW')
+         CALL OPEN(LDB,FILEO // '_d0000.DAT',-1,'NEW')
          WRITE(*,*)'DB DOING PROJECTED RADIUS Y=  ',J
      *        ,'/',NGY,'...', FILEO
          
@@ -221,7 +223,7 @@ C     THETAB AND PHIB RETURNED ARE:
 C     These are varthetab and varphib in eq 42 44 of CJ99 & figure 5
 C     (angles between LVS and B and planes containing B LVS and k LVS
 C     
-                     THETAB=ATAN2(SQRT(XXB*XXB+YYB*YYB),ZZB)	
+                     THETAB=ATAN2(SQRT(XXB*XXB+YYB*YYB),ZZB)
                      PHIB=ATAN2(YYB,XXB)
                      CALL DBE
                      COUNT=COUNT+1.

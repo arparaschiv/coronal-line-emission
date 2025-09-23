@@ -96,14 +96,14 @@ C  write compressed integer values
 C
 C         PAR description of diverse outputs
 C         Normalized output
-C	      WRITE(LDB) ( SUMS(KR,IM)/SUMS(1,0),IM=0,3 )
+C         WRITE(LDB) ( SUMS(KR,IM)/SUMS(1,0),IM=0,3 )
 C         Double precision output as long as PREC is enabled
 C  	      WRITE(LDB) ( SUMS(KR,IM),IM=0,3 )
-C         Single precision output after a doulble precision calculation via PREC
-  	      WRITE(LDB) ( REAL(SUMS(KR,IM)),IM=0,3 )
+C         Single precision output after a double precision calculation via PREC
+          WRITE(LDB) ( REAL(SUMS(KR,IM)),IM=0,3 )
 C         Obsolete compression enabled function
-C	      WRITE(LDB) ( ICMP( SUMS(KR,IM) / SUMS(1,0) ),IM=0,3 ) 
-c		  WRITE(LDB) ( ICMP( SUMS(KR,IM)),IM=0,4 ) 
+C         WRITE(LDB) ( ICMP( SUMS(KR,IM) / SUMS(1,0) ),IM=0,3 ) 
+c         WRITE(LDB) ( ICMP( SUMS(KR,IM)),IM=0,4 ) 
 
 	   ENDIF
 	END DO
@@ -111,7 +111,7 @@ c		  WRITE(LDB) ( ICMP( SUMS(KR,IM)),IM=0,4 )
 	END
 C
 C	
-C ### the exponentila is unstable at certain configurations
+C ### the exponential function is unstable at certain configurations
 c	INTEGER*2 FUNCTION ICMP(X)
 c	INCLUDE 'PREC'
 c	IMX=32767.
