@@ -1,10 +1,10 @@
 Changelog for CLE and DB (CLEDB database building) fortran codes
 
 Executable filenames are clexxxx and dbxxxx where xxx are version numbers (no dots).
-Current version is CLE_V2.x.x from march 2020 onwards
-Old CLE V1 is in CLE_v1.9.0(last)
+Current version is CLE_V2.x.x from march 2020 onward
+Old CLE V1 is included as part of CLE_v1.9.0 (last).
 
-Versioning is X.Y.Z.T: X are majore releases, Y are feature updates, Z are bugfixes, T are small maitenanteance fixex
+Versioning is X.Y.Z.T: X are major releases, Y are feature updates, Z are bugfixes, T are small maintenance fixes
 
 Symbolic links are in the "cle/binary" directory
 
@@ -19,9 +19,9 @@ ln -s path_to/cle/db20x ../work_dir/db20x # (SOFT)for working directory linking
 -------
 2.0.5
 -------
-10 Aug 2024 ARP - Changed the way databases are named to make pycelp integrations more feasible
+10 Aug 2024 ARP - Changed the way databases are named to make pycelp integrations more feasible.
 
-- DB code update: Tha database naming conventions are changed to db_hx.xx_d0.00 where h and d are sampled densities. Densities are not captured in CLD databases individually. This is important as CLEDB can no longer properly read pre v2.0.5 databases.
+- DB code update: Tha database naming conventions are changed to db_hx.xx_d0.00 where h and d are sampled densities. Densities are not separated into individual CLE databases in this CLE configuration, but this change is needed for uniformity between modes of database generation. The db.hdr header will point to a correct processing branch for these types of databases. This is an important case as CLEDB can no longer properly read pre v2.0.5 databases.
 ------------------------------------------------------------------------
 
 -------
@@ -29,7 +29,7 @@ ln -s path_to/cle/db20x ../work_dir/db20x # (SOFT)for working directory linking
 -------
 10 July 2024 ARP - MAINTENANCE
 
-- DB code update: small change to write in the db.hdr file that the database is written by CLE 
+- DB code update: small change; write in the db.hdr file that the database is written by CLE calculations.
 ------------------------------------------------------------------------
 
 -------
@@ -37,8 +37,7 @@ ln -s path_to/cle/db20x ../work_dir/db20x # (SOFT)for working directory linking
 -------
 26 Sep 2023 ARP - MAINTENANCE
 
-- DB makefile update to include more libraries like glibc for static building. this adds more compatibility for older linux distributions.
-   Thanks to Rahul Sharma for notifying us about this.
+- DB makefile update to include more libraries like glibc for static building. This adds more compatibility for older linux distributions. Thanks to Rahul Sharma for notifying us about this.
 ------------------------------------------------------------------------
 
 -------
@@ -130,6 +129,7 @@ Dec 21 2020 PAR - IMPROVEMENT
 
 To use, change the input file to dipolv and use the dipolv.dat input in run dir.
 dipolv.f is dependent on dipole.f as dipot and qupot functions NEED to be defined there.
+
 - added dipolv name and typesetting in corona.f
 Note: dipolv needs to not be named dipolev because the filename length is hard-coded to 6 characters!
 ------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 Last edit: Sep. 23 2025
 
-Notes on fortran-77 program "cle" (coronal line emission) by 
+Notes on Fortran-77 program "CLE" (coronal line emission) by
 P. Judge.
 
 Directories:
@@ -8,7 +8,7 @@ Directories:
 
 cle-current/   source code (current version. Github tags point to previous versions)
 data/          data needed by the program (atomic models, ionization
-               balance, grid, input options) Separate directories for CLE and db exist.
+               balance, grid, input options). Separate directories for CLE and db exist.
 idl/           some idl procedures to read and plot output
 python/        some python procedures to read and plot output
 test/          directory containing different default scripts and configuration files
@@ -34,34 +34,33 @@ Compilation:
 
 FOR CLE:
 
-use "make cle" in the current directory. executable cle is in the same
+use "make" in the current directory. Executable binary cle is in the same
 directory.
 
+      make cle
 
-DOR DB :
+
+FOR DB :
+
 TO BUILD AND RUN THE DB (DATABASE) SINGLE POINT "INVERSIONS"
 
 FIRST GET TO MAIN CLE DIRECTORY
 
-cd cle
+      cd cle
 
 BUILD EXEC:
 
       cd cle-current
       make db
 
-(note that this version of 29 dec uses only one value of B=1G
-but it reads DB.INPUT that still contains an older array version
-for B that is not needed.  the file "db.hdr' does not contain
-the array, it is read by the python codes.
 
 BUILD DATABASE:
 
-      cd ../seek/dbcle/test
-      ../../../cle-current/db
+      cd ../test/test_databasebuild
+      ./rundb_1line.sh
 
 RUN EXAMPLE FILE TO PRODUCE RESULTS AND PLOTS
-    cd ../../
+    cd ../python/seek/
     python example.py
 
 Running:
@@ -156,22 +155,22 @@ IDL and PYTHON procedures:
 ---------------
 
 The idl and python directories contain useful routines to read cle input and output atmosphere files.
-Most important are atmrd and outrd, with versions for idl and pyuthon. Inside the scripts one can find
+Most important are atmrd and outrd, with versions for idl and python. Inside the scripts one can find
 more explanations and call examples.
 
 
-see the file AAAREADME in the idl/ and /python subdirectory.
+see the file AAAREADME in the idl/ and /python subdirectories.
 
 
 Tests:
 ---------------
 
-test_cle_3dipole, test_cle_degeneracy, test_cle_scripts and test_db_scripts	are working directories of CLE simulations. A user has to add an atom from "data" and rename it to "ATOM"(it it does not exist or not correct configuration), create a softlink to a cle executable and then run ./cle in a terminal.
+test_cle_3dipole, test_cle_degeneracy, test_cle_scripts and test_db_scripts	are working directories of CLE simulations. A user has to add an atom from "data" and rename it to "ATOM"(it it does not exist or not correct configuration), create a soft-link to a cle executable and then run ./cle in a terminal.
 
 After that we can use outrd to read the outputs of the simulation. A new file "OUT" will be created.
 The "dipole.dat" or "sheet.dat" files control the structure that is simulated, there are also other routines that can be experimented with.
 The "INPUT" files give you a range of parameters that govern the simulation, including which routine to use; eg. DIPOLE.
 
-test_databasebuild is a first iteration example of a working CLE database building routine. This has been supers4eeded by a similar version offered as part of the CLEDB distribution in the "build" section.
+test_databasebuild is a first iteration example of a working CLE database building routine. This has been superseded by a similar implementation offered as part of the CLEDB distribution in the "build" section.
 .............................
 
