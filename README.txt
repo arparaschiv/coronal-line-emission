@@ -1,16 +1,19 @@
-Last edit: Sep. 23 2025
+Notes on Fortran-77 program "CLE" (coronal line emission) by P. Judge.
 
-Notes on Fortran-77 program "CLE" (coronal line emission) by
-P. Judge.
+Last edit: Sep. 23 2025
 
 Directories:
 ------------
 
 cle-current/   source code (current version. Github tags point to previous versions)
+
 data/          data needed by the program (atomic models, ionization
                balance, grid, input options). Separate directories for CLE and db exist.
+
 idl/           some idl procedures to read and plot output
+
 python/        some python procedures to read and plot output
+
 test/          directory containing different default scripts and configuration files
                and setups for running code tests
 
@@ -92,7 +95,9 @@ ATOM      atomic data.  Use one of the files atom.fe10, atom.fe13
           most up to date versions we have. The "ls" ones are
           classic, while the "mix" ones have new calculations included.
 
-Preference is to using more current atoms, e.g. not those ending the filename with "o" (old). "big" atoms might be useful for experienced users, but not for starting up things. you use them by overwriting the "ATOM" file in any scripts within the "test" directory.
+Preference is to using more current atoms, e.g. not those ending the filename with "o" (old).
+"big" atoms might be useful for experienced users, but not for starting up things.
+These are used by overwriting the "ATOM" file in any scripts within the "test" directory.
 
 
 File INPUT:
@@ -158,19 +163,22 @@ The idl and python directories contain useful routines to read cle input and out
 Most important are atmrd and outrd, with versions for idl and python. Inside the scripts one can find
 more explanations and call examples.
 
-
 see the file AAAREADME in the idl/ and /python subdirectories.
 
 
 Tests:
 ---------------
 
-test_cle_3dipole, test_cle_degeneracy, test_cle_scripts and test_db_scripts	are working directories of CLE simulations. A user has to add an atom from "data" and rename it to "ATOM"(it it does not exist or not correct configuration), create a soft-link to a cle executable and then run ./cle in a terminal.
+test_cle_3dipole, test_cle_degeneracy, test_cle_scripts and test_db_scripts	are working directories
+of CLE simulations. A user has to add an atom from "data" and rename it to "ATOM"(if it does not exist
+or not correct configuration), create a soft-link to a cle executable and then run ./cle in a terminal.
 
 After that we can use outrd to read the outputs of the simulation. A new file "OUT" will be created.
-The "dipole.dat" or "sheet.dat" files control the structure that is simulated, there are also other routines that can be experimented with.
-The "INPUT" files give you a range of parameters that govern the simulation, including which routine to use; eg. DIPOLE.
+The "dipole.dat" or "sheet.dat" files control the structure that is simulated, there are also other
+routines that can be experimented with. The "INPUT" files give you a range of parameters that govern
+the simulation, including which routine to use; eg. DIPOLE.
 
-test_databasebuild is a first iteration example of a working CLE database building routine. This has been superseded by a similar implementation offered as part of the CLEDB distribution in the "build" section.
+test_databasebuild is a first iteration example of a working CLE database building routine.
+This has been superseded by a similar implementation offered as part of the CLEDB distribution in the "build" section.
 .............................
 
